@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/torso_black"
+            android:title="@string/nav_reservacion"/>
+        <item
+            android:id="@+id/nav_mis_clases"
+            android:icon="@drawable/calendar_nav"
+            android:title="@string/nav_mis_clases"/>
+    </group>
+    <item android:title="@string/nav_other">
+        <menu>
+            <item
+                android:id="@+id/nav_pagos"
+                android:icon="@drawable/pagos_black"
+                android:title="@string/nav_mi_cuenta"/>
+            <!--<item
+                android:id="@+id/nav_salir"
+                android:icon="@drawable/logout_rounded"
+                android:title="@string/nav_logOut"/>-->
+        </menu>
+    </item>
+</menu>

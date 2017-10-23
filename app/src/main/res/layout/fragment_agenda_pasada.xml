@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="?attr/actionBarSize">
+    <android.support.design.widget.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/tablayout_agenda_pasada"
+        android:background="@color/GRAY_TAB"
+        app:tabSelectedTextColor="@color/colorPrimary"
+        app:tabTextColor="@color/GRAY"
+        app:tabIndicatorColor="@color/button_info_window"/>
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_pager_agenda_pasada"/>
+</LinearLayout>

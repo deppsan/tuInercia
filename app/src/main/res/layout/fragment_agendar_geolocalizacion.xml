@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize">
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"/>
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_margin="20dp"
+        android:entries="@array/array_zonas"
+        android:textAlignment="center"
+        android:background="@color/transWHITE"
+        android:id="@+id/spn_Zonas"></Spinner>
+    <ImageButton
+        android:id="@+id/image_button_my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/my_location"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:elevation="2dp"
+        android:layout_alignParentRight="true" />
+</RelativeLayout>

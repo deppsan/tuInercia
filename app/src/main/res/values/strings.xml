@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Inercia</string>
+
+
+    <!--Buttons-->
+    <string name="btn_login">Ejercitame</string>
+    <string name="btn_sign_up">Unete ya</string>
+    <string name="btn_login_check">Aceptar</string>
+    <string name="btn_check_in">CHECK IN</string>
+    <string name="btn_cancelar">CANCELAR</string>
+
+    <!--Labels-->
+    <string name="textview_email">E-MAIL</string>
+    <string name="textview_contraseña">CONTRASEÑA</string>
+    <string name="textview_confirmar_email">CONFIRMAR E-MAIL</string>
+    <string name="textview_confirmar_contraseña">CONFIRMAR CONTRASEÑA</string>
+    <string name="textview_nombre">Nombre</string>
+    <string name="textview_apellido">Apellidos</string>
+    <string name="textiview_sexo">Soy: </string>
+    <string name="radio_mujer">Mujer</string>
+    <string name="radio_hombre">Hombre</string>
+
+    <!--Menu-->
+    <string name="nav_logOut">Salir</string>
+    <string name="nav_configuracion">Configuracion</string>
+    <string name="nav_other">Otros</string>
+    <string name="nav_reservacion">Reservar</string>
+    <string name="nav_mi_cuenta">Mi Cuenta</string>
+    <string name="nav_mis_clases">Mis Clases</string>
+
+
+    <string-array name="array_zonas">
+        <item>Mi ubicación</item>
+        <item>Cumbres</item>
+        <item>Tecnologico</item>
+        <item>Valle Oriente</item>
+    </string-array>
+
+    <!--Seccion de Estudio agenda-->
+    <string name="our_excer">NUESTRO EJERCICIO</string>
+    <string name="label_agenda_clase">AGENDA TU CLASE: </string>
+    <string name="label_orientacion_agenda">ORIÉNTAME</string>
+    <string name="label_direccion">DIRECCION: </string>
+    <string name="asdf">Avenida SiempreViva  #1234, Lomas de Springfield : </string>
+
+    <string-array name="array_letra_semana">
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+
+    <string-array name="array_titles">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+    
+    <string name="tab_title_agendas">Agendas</string>
+    <string name="tab_title_pasadas">Pasadas</string>
+</resources>

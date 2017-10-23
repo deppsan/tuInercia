@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <color name="colorPrimary">#1d152d</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="WHITE">#FFFFFF</color>
+    <color name="BLACK">#000000</color>
+    <color name="transBLACK">#90000000</color>
+    <color name="transWHITE">#90FFFFFF</color>
+    <color name="button_unete">#1DEEEE</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="GRAY">#808080</color>
+    <color name="button_info_window">#3015d3</color>
+    <color name="gradient_begin_agendas_pasadas">#3323cb</color>
+    <color name="gradient_end_agendas_pasadas">#4c15c5</color>
+    <color name="GRAY_TAB">#E8E8EA</color>
+</resources>
