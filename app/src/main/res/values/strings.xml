@@ -19,6 +19,7 @@
     <string name="textiview_sexo">Soy: </string>
     <string name="radio_mujer">Mujer</string>
     <string name="radio_hombre">Hombre</string>
+    <string name="title_main">Mi Adrenalina</string>
 
     <!--Menu-->
     <string name="nav_logOut">Salir</string>
@@ -54,10 +55,9 @@
     </string-array>
 
     <string-array name="array_titles">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
+        <item>Mi Adrenalina</item>
+        <item>Estudios Cerca</item>
+        <item>Mis Clases</item>
     </string-array>
     
     <string name="tab_title_agendas">Agendas</string>

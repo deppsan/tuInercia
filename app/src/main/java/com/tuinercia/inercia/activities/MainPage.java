@@ -24,6 +24,7 @@ import com.tuinercia.inercia.fragments.AgendaFragment;
 import com.tuinercia.inercia.fragments.PagosWebViewFragment;
 import com.tuinercia.inercia.fragments.ReservacionClasesFragment;
 import com.tuinercia.inercia.fragments.ReservacionGeolocalizacionFragment;
+import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 
 /**
  * Created by ricar on 22/09/2017.
@@ -40,6 +41,9 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     View navHeader;
     Menu menu;
 
+    private String[] array_titles;
+    ChangeTitleImpl changeTitle;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,16 +54,18 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         menu = navigationView.getMenu();
-        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.WHITE));
-
+        array_titles = getResources().getStringArray(R.array.array_titles);
+        changeTitle = ChangeTitleImpl.getInstance(this);
         navHeader = navigationView.getHeaderView(0);
 
-        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.WHITE));
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.app_name,R.string.app_name);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.title_main,R.string.title_main);
         actionBarDrawerToggle.syncState();
+        changeTitle.changeTitleByCurrentFragment(0);
 
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -77,7 +83,7 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(containerViewId, fragment, fragmentTag)
-//                .addToBackStack(backStackStateName)
+                .addToBackStack(backStackStateName)
                 .commit();
     }
 
@@ -151,5 +157,21 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         drawerLayout.closeDrawers();
 
         return false;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    public String[] getArray_titles() {
+        return array_titles;
+    }
+
+    public void setArray_titles(String[] array_titles) {
+        this.array_titles = array_titles;
     }
 }

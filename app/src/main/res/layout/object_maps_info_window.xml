@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:orientation="vertical"
-    android:weightSum="5">
+    android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:layout_weight="1"
         android:background="@drawable/info_window_background">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_margin="5dp"
             android:layout_weight="1">
             <ImageView
                 android:layout_width="match_parent"
@@ -28,7 +24,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:weightSum="5">
+            android:weightSum="6"
+            android:layout_margin="5dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -39,7 +36,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textAlignment="center"
                 android:text="Avenida SiempreViva #1234, Zona Cumbres"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +47,7 @@
                 <Button
                     android:id="@+id/button_ver_clase_info"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/button_height"
                     android:text="Ver Clase"
                     android:textColor="@color/WHITE"
                     android:background="@drawable/button_info_window"/>

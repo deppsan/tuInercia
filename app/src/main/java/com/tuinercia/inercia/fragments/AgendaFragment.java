@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class AgendaFragment extends Fragment {
     ViewPager viewPager;
 
     public static final String FRAGMENT_TAG  = "AgendaFragment";
+    private static final int TITLE = 2;
 
     @Nullable
     @Override
@@ -38,6 +40,8 @@ public class AgendaFragment extends Fragment {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
         return v;
     }

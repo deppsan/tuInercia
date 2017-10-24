@@ -11,13 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.interfaces.InerciaApiValidarUsuario;
+import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 /**
  * Created by ricar on 18/09/2017.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener{
+public class LoginFragment extends Fragment implements View.OnClickListener, InerciaApiValidarUsuario{
 
     public static final String FRAGMENT_TAG = "LoginFragment";
     LoginListener listener;
@@ -47,7 +49,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_login:
-                listener.onClickButtonLogin();
+                InerciaApiClient.getInstance()
+                                .validarUsuario( text_email_login.getText().toString()
+                                                ,text_contraseña_login.getText().toString()
+                                                ,getContext()
+                                                ,this);
                 break;
         }
     }
@@ -66,6 +72,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    @Override
+    public void onUsuarioCorrecto() {
+        listener.onClickButtonLogin();
+    }
+
+    @Override
+    public void onUsuarioIncorrecto() {
+
+    }
+
+    @Override
+    public void onErrorServer() {
+
     }
 
     public interface LoginListener{

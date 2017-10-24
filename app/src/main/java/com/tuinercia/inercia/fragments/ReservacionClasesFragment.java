@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.ReservacionClasesAdapter;
+import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
     ReservacionClasesListener listener;
 
     public final static String FRAGMENT_TAG = "ReservacionClasesFragment";
+    private final static int TITLE = 0;
 
     @Nullable
     @Override
@@ -61,6 +63,8 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
             }
         });
         grid_clases.setOnItemClickListener(this);
+
+        ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
         return v;
 

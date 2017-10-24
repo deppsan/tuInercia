@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 /**
@@ -72,6 +73,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
     public static final String FRAGMENT_TAG = "ReservacionGeolocalizacionFragment";
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 0;
+    private static final int TITLE = 1;
 
     Context mContext;
 
@@ -87,7 +89,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         spn_Zonas                = (Spinner) v.findViewById(R.id.spn_Zonas);
         mMap                     = (MapView) v.findViewById(R.id.map);
 
-        custom_info_view = getLayoutInflater(savedInstanceState).inflate(R.layout.object_maps_info_window,mMap);
+        custom_info_view = getLayoutInflater(savedInstanceState).inflate(R.layout.object_maps_info_window,null);
 
         mMap.onCreate(savedInstanceState);
         mMap.onResume();
@@ -106,6 +108,8 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         image_button_my_location.setOnClickListener(this);
         image_button_my_location.setVisibility(View.INVISIBLE);
         spn_Zonas.setOnItemSelectedListener(this);
+
+        ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
         return v;
     }
@@ -360,6 +364,20 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         public View getInfoWindow(Marker marker) {
 
 
+            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            Display d = wm.getDefaultDisplay();
+            Point size = new Point();
+            d.getSize(size);
+            int mHeight = size.y;
+            int actionBarHeight = 0;
+
+            TypedValue tv = new TypedValue();
+            if (mContext.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,mContext.getResources().getDisplayMetrics());
+            }
+
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            custom_info_view.setMinimumHeight(((mHeight/3))-(actionBarHeight/3));
 
             Button btn = (Button) custom_info_view.findViewById(R.id.button_ver_clase_info);
             btn.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
