@@ -99,7 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/ActivityStudioContent"
-                    android:text="@string/asdf"/>
+                    android:text="@string/asdf"
+                    android:id="@+id/text_estudio_direccion"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -3,7 +3,6 @@ package com.tuinercia.inercia.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
@@ -24,7 +23,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,14 +40,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.tuinercia.inercia.DTO.Parlor;
+import com.tuinercia.inercia.DTO.Zone;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
+import com.tuinercia.inercia.implementation.InerciaApiGetParlorsListenerImpl;
+import com.tuinercia.inercia.implementation.InerciaApiGetZonesListenerImpl;
+import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
+
+import java.util.ArrayList;
 
 /**
  * Created by ricar on 25/09/2017.
@@ -56,9 +62,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
     MapView mMap;
-    GoogleMap gMap;
-    Spinner spn_Zonas;
-    View custom_info_view;
+    public GoogleMap gMap;
+    public Spinner spn_Zonas;
+    static View custom_info_view;
     ImageButton image_button_my_location;
 
     FusedLocationProviderClient mFusedLocationClient;
@@ -66,6 +72,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     GoogleApiClient mGoogleApiClient;
     LatLng mLatLng;
 
+    public static ArrayList<Parlor> res_parlors;
     boolean permisosNoOtorgados = false;
     int currentSpinnerOption = 0;
     int permissionCheck;
@@ -75,9 +82,11 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 0;
     private static final int TITLE = 1;
 
-    Context mContext;
+    static Context mContext;
 
-    @Nullable
+    InerciaApiGetParlorsListenerImpl inerciaApiGetParlorsListener;
+    InerciaApiGetZonesListenerImpl inerciaApiGetZonesListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_agendar_geolocalizacion, container, false);
@@ -90,6 +99,8 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         mMap                     = (MapView) v.findViewById(R.id.map);
 
         custom_info_view = getLayoutInflater(savedInstanceState).inflate(R.layout.object_maps_info_window,null);
+
+        InerciaApiClient.getInstance(getActivity().getBaseContext()).getAllZones(inerciaApiGetZonesListener);
 
         mMap.onCreate(savedInstanceState);
         mMap.onResume();
@@ -109,6 +120,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         image_button_my_location.setVisibility(View.INVISIBLE);
         spn_Zonas.setOnItemSelectedListener(this);
 
+        inerciaApiGetParlorsListener = new InerciaApiGetParlorsListenerImpl(this);
+        inerciaApiGetZonesListener = new InerciaApiGetZonesListenerImpl(this);
+
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
         return v;
@@ -119,7 +133,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         public void onLocationResult(LocationResult locationResult) {
             for (Location location : locationResult.getLocations()){
                 mLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng,15));
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng,15.0f));
             }
         }
     };
@@ -151,39 +165,15 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         CameraPosition cameraPosition;
-        /*En esta seccion se remplazara con los datos recividos por la Api de Inercia*/
-        switch (position) {
-            case 0:
-                if (mLatLng != null){
-                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng,15));
-                }else if (permisosNoOtorgados){
-                    Toast.makeText(getContext(), "No has otorgado permisos de localización, favor de revisar en administrador de Aplicaciones de tu Célular.", Toast.LENGTH_LONG).show();
-                    spn_Zonas.setSelection(currentSpinnerOption);
-                }
-                break;
-            case 1:
-                cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(25.747162, -100.3903067)).zoom(15).build();
-                gMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(cameraPosition));
-                currentSpinnerOption = 1;
-                break;
-            case 2:
-                cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(25.6527492, -100.2994418)).zoom(15).build();
-                gMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(cameraPosition));
-                currentSpinnerOption = 2;
-                break;
-            case 3:
-                cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(25.638729, -100.3166602)).zoom(15).build();
-                gMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(cameraPosition));
-                currentSpinnerOption = 3;
-                break;
 
-        }
+        Zone zone = (Zone) spn_Zonas.getSelectedItem();
+
+        cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(Double.parseDouble(zone.getLat()),Double.parseDouble(zone.getLng())))
+                            .zoom(15.0f)
+                            .build();
+        gMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        currentSpinnerOption = position;
     }
 
     @Override
@@ -211,7 +201,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
                             }
                         }else{
                             permisosNoOtorgados = true;
-                            spn_Zonas.setSelection(1);
+                            spn_Zonas.setSelection(0);
                         }
                     }
                 }
@@ -225,19 +215,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
-        // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(25.747162, -100.3903067)).title("Estudio");
-        // Changing marker icon
-        marker.icon(BitmapDescriptorFactory.fromBitmap(
-                BitmapFactory.decodeResource(getContext().getResources(),R.drawable.tag_map)
-        ));
-        // adding marker
-        gMap.addMarker(marker);
-        gMap.setOnInfoWindowClickListener(this);
-        gMap.setInfoWindowAdapter(new MapsAdapterCustom());
-        gMap.setOnMarkerClickListener(this);
-
+        InerciaApiClient.getInstance(mContext).getParlorsByDicipline("Yoga",inerciaApiGetParlorsListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -299,13 +277,16 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        listener.onClickMarkerInfoWindow(marker);
+        int i = Integer.parseInt(marker.getTitle());
+        Parlor p  = res_parlors.get(i);
+
+        listener.onClickMarkerInfoWindow(p);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng latLng = marker.getPosition();
-        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude + .003, latLng.longitude),15));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude + .003, latLng.longitude),15.0f));
         marker.showInfoWindow();
         return true;
     }
@@ -322,9 +303,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
                     Location location;
                     try{
                         location = locationManager.getLastKnownLocation(provider);
-                        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new
+                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new
                                 LatLng(location.getLatitude(),
-                                location.getLongitude()), 15));
+                                location.getLongitude()), 15.0f));
                     }catch (SecurityException e){
                         e.printStackTrace();
                     }
@@ -337,9 +318,8 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         }
     }
 
-
     public interface ReservacionGeolocalizacionListener{
-        void onClickMarkerInfoWindow(Marker marker);
+        void onClickMarkerInfoWindow(Parlor parlor);
     }
 
     @Override
@@ -358,11 +338,13 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         listener = null;
     }
 
-    private class MapsAdapterCustom implements GoogleMap.InfoWindowAdapter{
+    public static class MapsAdapterCustom implements GoogleMap.InfoWindowAdapter{
 
         @Override
         public View getInfoWindow(Marker marker) {
 
+            int i = Integer.parseInt(marker.getTitle());
+            Parlor p  = res_parlors.get(i);
 
             WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
             Display d = wm.getDefaultDisplay();
@@ -376,13 +358,21 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
                 actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,mContext.getResources().getDisplayMetrics());
             }
 
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             custom_info_view.setMinimumHeight(((mHeight/3))-(actionBarHeight/3));
 
-            Button btn = (Button) custom_info_view.findViewById(R.id.button_ver_clase_info);
-            btn.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
+            Button button_ver_clase_info;
+            TextView text_info_title,text_info_description;
+            ImageView img_info_studio;
 
+            button_ver_clase_info = (Button) custom_info_view.findViewById(R.id.button_ver_clase_info);
+            text_info_description = (TextView) custom_info_view.findViewById(R.id.text_info_description);
+            text_info_title = (TextView) custom_info_view.findViewById(R.id.text_info_title);
+            img_info_studio = (ImageView) custom_info_view.findViewById(R.id.img_info_studio);
 
+            text_info_description.setText(p.getDescription());
+            text_info_title.setText(p.getName());
+
+            button_ver_clase_info.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);
 
             return custom_info_view;
         }

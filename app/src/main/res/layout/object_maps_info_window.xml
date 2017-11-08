@@ -17,7 +17,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/imagen_infor_prueba"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:id="@+id/img_info_studio"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,15 +31,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="MAD Complex"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:id="@+id/text_info_title"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:textAlignment="center"
-                android:text="Avenida SiempreViva #1234, Zona Cumbres"/>
+                android:id="@+id/text_info_description"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -31,7 +31,6 @@ public class conexionHTTP{
     private static conexionHTTP instance = null;
     private RequestQueue queue;
 
-
     public conexionHTTP getInstance(){
         if (instance == null){
             instance = new conexionHTTP();
@@ -39,57 +38,7 @@ public class conexionHTTP{
         return instance;
     }
 
-
     public conexionHTTP() { }
-
-    /*public void getJsonResponse (Context context, String url, final VolleyCallback callback){
-        queue = Volley.newRequestQueue(context);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
-                new Response.Listener<String>(){
-                    @Override
-                    public void onResponse(String response) {
-                        callback.onSuccess(response);
-                    }
-                },new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse != null){
-                            callback.onError(error.networkResponse.statusCode);
-                        }else {
-                            callback.onError(500);
-                        }
-                    }
-        });
-        queue.add(stringRequest);
-    }
-
-    public void putJsonResponse (Context context, String url, final HashMap<String, String> params, final VolleyCallback callback){
-        queue = Volley.newRequestQueue(context);
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT,url,
-                new Response.Listener<String>(){
-                    @Override
-                    public void onResponse(String response) {
-                        callback.onSuccess(response);
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse != null){
-                            callback.onError(error.networkResponse.statusCode);
-                        }else {
-                            callback.onError(500);
-                        }
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                return params;
-            }
-        };
-        queue.add(stringRequest);
-    }*/
 
     public void postJsonResponse(Context context, String url, final HashMap<String,String> params, final VolleyCallback callback){
         queue = Volley.newRequestQueue(context);

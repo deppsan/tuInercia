@@ -9,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
-import com.tuinercia.inercia.adapter.ReservacionClasesAdapter;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
-import com.tuinercia.inercia.utils.TypeFaceCustom;
+import com.tuinercia.inercia.implementation.InerciaApiGetDiciplinasListenerImpl;
+import com.tuinercia.inercia.network.InerciaApiClient;
 
 import java.util.ArrayList;
 
@@ -24,10 +21,11 @@ import java.util.ArrayList;
  * Created by ricar on 22/09/2017.
  */
 
-public class ReservacionClasesFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ReservacionClasesFragment extends Fragment implements AdapterView.OnItemClickListener{
 
-    GridView grid_clases;
+    public GridView grid_clases;
     ReservacionClasesListener listener;
+    InerciaApiGetDiciplinasListenerImpl inerciaApiGetDiciplinasListener;
 
     public final static String FRAGMENT_TAG = "ReservacionClasesFragment";
     private final static int TITLE = 0;
@@ -40,28 +38,9 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
         grid_clases = (GridView) v.findViewById(R.id.grid_clases);
         ArrayList<Integer> i = new ArrayList<>();
 
-        i.add(1);
-        i.add(1);
-        i.add(1);
-        i.add(1);
-        i.add(1);
-        i.add(1);
-        i.add(1);
-        i.add(1);
+        inerciaApiGetDiciplinasListener = new InerciaApiGetDiciplinasListenerImpl(this);
+        InerciaApiClient.getInstance(getContext()).getDiciplinas(inerciaApiGetDiciplinasListener);
 
-        grid_clases.setAdapter(new ReservacionClasesAdapter(R.layout.object_grid_reservacion_clases,i,getContext()) {
-            @Override
-            public void onEntradaSet(View v, ReservacionClasesAdapter.ViewHolder mHolder) {
-                mHolder.imagenClase = (ImageView) v.findViewById(R.id.img_clase_grid);
-                mHolder.nombreClase = (TextView) v.findViewById(R.id.txt_clase_grid);
-                mHolder.nombreClase.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_BOLD_TYPE_FACE);
-            }
-
-            @Override
-            public void onEntrada(Object clases, ReservacionClasesAdapter.ViewHolder mHolder, int position) {
-
-            }
-        });
         grid_clases.setOnItemClickListener(this);
 
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);

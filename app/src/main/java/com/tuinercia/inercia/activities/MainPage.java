@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,15 +17,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Marker;
+import com.tuinercia.inercia.DTO.Parlor;
+import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.AgendaFragment;
 import com.tuinercia.inercia.fragments.PagosWebViewFragment;
 import com.tuinercia.inercia.fragments.ReservacionClasesFragment;
 import com.tuinercia.inercia.fragments.ReservacionGeolocalizacionFragment;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
+import com.tuinercia.inercia.network.InerciaApiClient;
+import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 /**
  * Created by ricar on 22/09/2017.
@@ -41,22 +47,37 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     View navHeader;
     Menu menu;
 
+    static final String INTENT_EXTRA_HEADER = "parlor";
+
     private String[] array_titles;
     ChangeTitleImpl changeTitle;
+
+    User user;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
+        UtilsSharedPreference.getInstance(getApplicationContext()).checkLogin();
+
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         drawerLayout = (DrawerLayout) findViewById(R.id.navigationDrawer);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+        user = UtilsSharedPreference.getInstance(this).getUser();
+
         menu = navigationView.getMenu();
         array_titles = getResources().getStringArray(R.array.array_titles);
         changeTitle = ChangeTitleImpl.getInstance(this);
+
+
         navHeader = navigationView.getHeaderView(0);
+        TextView text_name =  (TextView) navHeader.findViewById(R.id.name);
+        TextView text_mail = (TextView) navHeader.findViewById(R.id.mail);
+
+        text_name.setText(user.getName());
+        text_mail.setText(user.getEmail());
 
         toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.WHITE));
 
@@ -64,7 +85,9 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.title_main,R.string.title_main);
+
         actionBarDrawerToggle.syncState();
+
         changeTitle.changeTitleByCurrentFragment(0);
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -113,17 +136,16 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            /*case R.id.btnCategorias:
-                Toast.makeText(this, "Aqui debera ir una pantalla de agenda =P", Toast.LENGTH_SHORT).show();
-                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void onClickMarkerInfoWindow(Marker marker) {
+    public void onClickMarkerInfoWindow(Parlor parlor) {
         Intent i = new Intent(this,EstudioAgenda.class);
+        String json_parlor = InerciaApiClient.getInstance(this).gson.toJson(parlor,Parlor.class);
+        i.putExtra(INTENT_EXTRA_HEADER,json_parlor);
         startActivity(i);
     }
 
@@ -163,15 +185,13 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         return toolbar;
     }
 
-    public void setToolbar(Toolbar toolbar) {
-        this.toolbar = toolbar;
-    }
-
     public String[] getArray_titles() {
         return array_titles;
     }
 
-    public void setArray_titles(String[] array_titles) {
-        this.array_titles = array_titles;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UtilsSharedPreference.getInstance(getApplicationContext()).checkLogin();
     }
 }

@@ -1,31 +1,45 @@
 package com.tuinercia.inercia.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.fragments.dialogs.ErrorConexionDialog;
+import com.tuinercia.inercia.fragments.dialogs.ErrorServerDialog;
+import com.tuinercia.inercia.implementation.InerciaApiValidarUsuarioImpl;
 import com.tuinercia.inercia.interfaces.InerciaApiValidarUsuario;
 import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
+import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 /**
  * Created by ricar on 18/09/2017.
  */
 
-public class LoginFragment extends Fragment implements View.OnClickListener, InerciaApiValidarUsuario{
+public class LoginFragment extends Fragment implements View.OnClickListener{
 
     public static final String FRAGMENT_TAG = "LoginFragment";
     LoginListener listener;
 
     EditText text_contraseña_login,text_email_login;
+    LinearLayout view_group_login, view_group_progress_bar;
     Button btn_login;
+
+    InerciaApiValidarUsuarioImpl inerciaApiValidarUsuario;
 
     @Nullable
     @Override
@@ -37,11 +51,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ine
 
         btn_login = (Button) v.findViewById(R.id.btn_login);
 
+        view_group_login = (LinearLayout) v.findViewById(R.id.view_group_login);
+        view_group_progress_bar = (LinearLayout) v.findViewById(R.id.view_group_progress_bar);
+
         text_contraseña_login.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
         text_email_login.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
 
         btn_login.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
         btn_login.setOnClickListener(this);
+
+        inerciaApiValidarUsuario = new InerciaApiValidarUsuarioImpl(this);
+
         return v;
     }
 
@@ -49,13 +69,35 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ine
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_login:
-                InerciaApiClient.getInstance()
-                                .validarUsuario( text_email_login.getText().toString()
-                                                ,text_contraseña_login.getText().toString()
-                                                ,getContext()
-                                                ,this);
+                String user = text_email_login.getText().toString();
+                String pass = text_contraseña_login.getText().toString();
+
+                if (user.trim().length() > 0 && pass.trim().length() >0){
+                    view_group_login.setClickable(false);
+                    view_group_progress_bar.setVisibility(View.VISIBLE);
+                    InerciaApiClient.getInstance(getContext())
+                            .validarUsuario( text_email_login.getText().toString()
+                                    ,text_contraseña_login.getText().toString()
+                                    ,inerciaApiValidarUsuario);
+                }else{
+                    messageWrongLogin();
+                }
+
                 break;
         }
+    }
+
+    public void messageWrongLogin(){
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle(R.string.dialog_title_login_error);
+        alertDialog.setMessage(getContext().getString(R.string.dialog_message_login_error));
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialog.show();
     }
 
     @Override
@@ -74,22 +116,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ine
         listener = null;
     }
 
-    @Override
-    public void onUsuarioCorrecto() {
-        listener.onClickButtonLogin();
-    }
-
-    @Override
-    public void onUsuarioIncorrecto() {
-
-    }
-
-    @Override
-    public void onErrorServer() {
-
-    }
-
     public interface LoginListener{
         void onClickButtonLogin();
+    }
+
+    public LoginListener getListener() {
+        return listener;
+    }
+
+    public LinearLayout getView_group_login() {
+        return view_group_login;
+    }
+
+    public LinearLayout getView_group_progress_bar() {
+        return view_group_progress_bar;
     }
 }

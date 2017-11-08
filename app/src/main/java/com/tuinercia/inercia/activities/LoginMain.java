@@ -11,18 +11,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.CrearCuentaFragment;
 import com.tuinercia.inercia.fragments.LoginFragment;
 import com.tuinercia.inercia.fragments.LoginOptionFragment;
+import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 public class LoginMain extends AppCompatActivity implements LoginOptionFragment.LoginOptionListener
                                                             , LoginFragment.LoginListener{
 
     FrameLayout frame_content;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,13 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
 
         setContentView(R.layout.activity_login_main);
 
-        addFragment(R.id.frame_content, new LoginOptionFragment(),LoginOptionFragment.FRAGMENT_TAG);
+        if(UtilsSharedPreference.getInstance(this).isLoggedIn()){
+            goToMainPage();
+        }else{
+            addFragment(R.id.frame_content, new LoginOptionFragment(),LoginOptionFragment.FRAGMENT_TAG);
+        }
+
+
     }
 
     public void addFragment(@IdRes int containerViewId,
@@ -73,10 +78,14 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
 
     @Override
     public void onClickButtonLogin() {
+        goToMainPage();
+    }
 
+    private void goToMainPage(){
         Intent intent = new Intent(this,MainPage.class);
         startActivity(intent);
         finish();
+
     }
 }
 

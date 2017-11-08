@@ -13,11 +13,14 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.EstudioSeleccionSemanaAdapter;
 import com.tuinercia.inercia.adapter.HorariosRecycleAdapter;
 import com.tuinercia.inercia.model.Horario;
+import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
+import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,18 +37,28 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     TextView text_estudios_description
             , label_estudio_description
             , label_estudio_agenda_tu_clase
-            , label_estudio_direccion;
+            , label_estudio_direccion
+            , text_estudios_direccion;
     Button button_estudio_orientame;
     Toolbar toolbar;
 
-
+    static final String INTENT_EXTRA_HEADER = "parlor";
 
     HorariosRecycleAdapter horariosAdapter;
     List<Horario> horarios = new ArrayList<>();
+    Parlor parlor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        UtilsSharedPreference.getInstance(getApplicationContext()).checkLogin();
+
+        String json_parlor = getIntent().getStringExtra(INTENT_EXTRA_HEADER);
+        parlor = InerciaApiClient.getInstance(this).gson.fromJson(json_parlor,Parlor.class);
+
+
+
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_estudio_agenda);
@@ -56,12 +69,17 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         label_estudio_agenda_tu_clase = (TextView) findViewById(R.id.label_estudio_agenda_tu_clase);
         label_estudio_direccion       = (TextView) findViewById(R.id.label_estudio_direccion);
         button_estudio_orientame      = (Button) findViewById(R.id.button_estudio_orientame);
+        text_estudios_direccion       = (TextView) findViewById(R.id.text_estudio_direccion);
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         label_estudio_description.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
         label_estudio_agenda_tu_clase.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
         label_estudio_direccion.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
         button_estudio_orientame.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
+
+        text_estudios_description.setText(parlor.getDescription());
+        text_estudios_direccion.setText(parlor.getAddress());
+        toolbar.setTitle(parlor.getName());
 
 
 
@@ -134,5 +152,11 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UtilsSharedPreference.getInstance(getApplicationContext()).checkLogin();
     }
 }

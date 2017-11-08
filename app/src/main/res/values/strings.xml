@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Inercia</string>
 
-
     <!--Buttons-->
     <string name="btn_login">Ejercitame</string>
     <string name="btn_sign_up">Unete ya</string>
@@ -20,6 +19,7 @@
     <string name="radio_mujer">Mujer</string>
     <string name="radio_hombre">Hombre</string>
     <string name="title_main">Mi Adrenalina</string>
+    <string name="title_all">Todo</string>
 
     <!--Menu-->
     <string name="nav_logOut">Salir</string>
@@ -59,7 +59,19 @@
         <item>Estudios Cerca</item>
         <item>Mis Clases</item>
     </string-array>
-    
+
+    <!--Tab Titles-->
     <string name="tab_title_agendas">Agendas</string>
     <string name="tab_title_pasadas">Pasadas</string>
+
+    <!--Dialogs-->
+    <string name="dialog_title_error_conection">Oh oh</string>
+    <string name="dialog_mensaje_error_conection">Revisa tu conexión de internet</string>
+    <string name="dialog_button_error_conection">REINTENTAR</string>
+    <string name="dialog_title_login_error">Oups</string>
+    <string name="dialog_message_login_error">Revisa este bien tu correo y/o contraseña</string>
+    <string name="dialog_title_error_server">¡No te rindas!</string>
+    <string name="dialog_message_error_server">Estamos mejorando para ejercitarte mejor. Intenta mas tarde</string>
+    <string name="dialog_meesage_crear_cuenta">¡Listo para tonificar! Comencemos</string>
+
 </resources>
