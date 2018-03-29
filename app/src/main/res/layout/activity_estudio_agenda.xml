@@ -22,6 +22,7 @@
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp">
             <ImageView
+                android:id="@+id/img_toolbar_studio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/rapel_asdf"
@@ -82,6 +83,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rcv_horarios"
+                android:scrollbars="vertical"/>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rcv_reservations"
                 android:scrollbars="vertical"/>
             <TextView
                 android:layout_width="match_parent"

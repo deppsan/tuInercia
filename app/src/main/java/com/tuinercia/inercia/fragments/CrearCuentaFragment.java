@@ -1,6 +1,8 @@
 package com.tuinercia.inercia.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.implementation.InerciaApiCreateUserListenerImpl;
+import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 /**
@@ -24,6 +29,7 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
 
     public static final String FRAGMENT_TAG = "CrearCuentaFragment";
     private CrearCuentaListener listener;
+    private InerciaApiCreateUserListenerImpl inerciaApiCreateUser;
 
     @Nullable
     @Override
@@ -46,6 +52,7 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
         button_crear.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
         button_crear.setOnClickListener(this);
 
+        inerciaApiCreateUser = new InerciaApiCreateUserListenerImpl(this);
 
         return v;
     }
@@ -54,12 +61,44 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_crear:
-                listener.onCrearCuenta();
+                String email = text_email_crear.getText().toString();
+                String emailConfirmar = text_confirmar_email_crear.getText().toString();
+                String contraseña = text_contraseña_crear.getText().toString();
+                String contraseñaConfirmar = text_contraseña_confirmar_crear.getText().toString();
+
+                if(validarConfirmaciones(email, emailConfirmar, contraseña, contraseñaConfirmar)){
+                    InerciaApiClient.getInstance(getContext()).createUser(email,contraseña,inerciaApiCreateUser);
+                }else{
+                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
+    private boolean validarConfirmaciones(String email, String emailConfirm, String contraseña, String contraseñaConfirm){
+        boolean validation = true;
+
+        validation = (email.equalsIgnoreCase(emailConfirm)) ? validation : false;
+        validation = (contraseña.equalsIgnoreCase(contraseñaConfirm)) ? validation : false;
+
+        return validation;
+    }
+
+    public void messageSuccessCreation(){
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("");
+        alertDialog.setMessage(getContext().getString(R.string.dialog_meesage_crear_cuenta));
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onCrearCuenta(FRAGMENT_TAG);
+            }
+        });
+        alertDialog.show();
+    }
+
     public interface CrearCuentaListener{
-        void onCrearCuenta();
+        void onCrearCuenta(String thisFragmentTag);
     }
 
     @Override
@@ -76,5 +115,25 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    public EditText getText_email_crear() {
+        return text_email_crear;
+    }
+
+    public EditText getText_confirmar_email_crear() {
+        return text_confirmar_email_crear;
+    }
+
+    public EditText getText_contraseña_crear() {
+        return text_contraseña_crear;
+    }
+
+    public EditText getText_contraseña_confirmar_crear() {
+        return text_contraseña_confirmar_crear;
+    }
+
+    public CrearCuentaListener getListener() {
+        return listener;
     }
 }

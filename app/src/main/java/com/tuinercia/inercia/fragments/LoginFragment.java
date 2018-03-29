@@ -76,9 +76,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                     view_group_login.setClickable(false);
                     view_group_progress_bar.setVisibility(View.VISIBLE);
                     InerciaApiClient.getInstance(getContext())
-                            .validarUsuario( text_email_login.getText().toString()
-                                    ,text_contraseña_login.getText().toString()
-                                    ,inerciaApiValidarUsuario);
+                                    .validarUsuario( text_email_login.getText().toString()
+                                            ,text_contraseña_login.getText().toString()
+                                            ,inerciaApiValidarUsuario);
                 }else{
                     messageWrongLogin();
                 }

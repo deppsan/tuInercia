@@ -1,6 +1,7 @@
 package com.tuinercia.inercia.implementation;
 
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class InerciaApiGetDiciplinasListenerImpl implements InerciaApiGetDicipli
     @Override
     public void chargeDiciplinas(Disciplines[] disciplines) {
         ArrayList<Disciplines> data = new ArrayList<>();
-        data.add(new Disciplines("0",reservacionClasesFragment.getContext().getString(R.string.title_all),Integer.toString(R.drawable.exercise),"","",""));
+        //data.add(new Disciplines("0",reservacionClasesFragment.getContext().getString(R.string.title_all),Integer.toString(R.drawable.exercise),"","",""));
         for (Disciplines d : disciplines){
             data.add(d);
         }
@@ -48,15 +49,16 @@ public class InerciaApiGetDiciplinasListenerImpl implements InerciaApiGetDicipli
                 Disciplines discipline = (Disciplines) clases;
                 mHolder.nombreClase.setText(discipline.getName());
                 Picasso.with(reservacionClasesFragment.getContext())
-                        .load(discipline.getPic_file_name())
+                        .load("http:" + discipline.getPic_file_name())
                         .placeholder(R.drawable.exercise)
+                        .resize(80,80)
                         .into(mHolder.imagenClase);
             }
         });
     }
 
     @Override
-    public void failChargeDiciplines() {
+    public void failChargeDiciplines(String errorMessage) {
         DialogFragment dialog = new ErrorConexionDialog();
         dialog.show(reservacionClasesFragment.getFragmentManager(),reservacionClasesFragment.FRAGMENT_TAG);
     }

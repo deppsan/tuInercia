@@ -12,7 +12,7 @@ public class Disciplines {
     String id;
     @SerializedName("name")
     String name;
-    @SerializedName("pic_file_name")
+    @SerializedName("icon_url")
     String pic_file_name;
     @SerializedName("denomination")
     String denomination;

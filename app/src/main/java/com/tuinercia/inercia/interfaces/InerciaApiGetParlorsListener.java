@@ -10,6 +10,6 @@ import java.util.ArrayList;
 
 public interface InerciaApiGetParlorsListener {
     void onGetParlorsSuccess(ArrayList<Parlor> parlors);
-    void onFailChargeParlors();
+    void onFailChargeParlors(String errorMessage);
     void onErrorServer(int statusCode);
 }

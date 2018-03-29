@@ -9,5 +9,5 @@ import com.tuinercia.inercia.DTO.Zone;
 public interface InerciaApiGetZonesListener {
     void onZonesReceived(Zone[] zones);
     void onErrorServer(int statusCode);
-    void onZonesNoReceived();
+    void onZonesNoReceived(String errorMessage);
 }

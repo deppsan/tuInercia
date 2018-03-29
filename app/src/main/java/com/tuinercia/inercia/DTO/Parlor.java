@@ -2,6 +2,8 @@ package com.tuinercia.inercia.DTO;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
+
 /**
  * Created by ricar on 02/11/2017.
  */
@@ -20,12 +22,36 @@ public class Parlor {
     String description;
     @SerializedName("contact")
     String contact;
-    @SerializedName("coord_x")
+    @SerializedName("lat")
     String coord_x;
-    @SerializedName("coord_y")
+    @SerializedName("long")
     String coord_y;
+    @SerializedName("pic1_url")
+    String pic1_url;
+    @SerializedName("pic2_ur")
+    String pic2_url;
+    @SerializedName("pic3_url")
+    String pic3_url;
 
-    public Parlor(int id, String name, String address, int studio_id, String description, String contact, String coord_x, String coord_y) {
+    File image;
+
+    public File getImage() {
+        return image;
+    }
+
+    public void setImage(File image) {
+        this.image = image;
+    }
+
+    public String getPic2_url() {
+        return pic2_url;
+    }
+
+    public void setPic2_url(String pic2_url) {
+        this.pic2_url = pic2_url;
+    }
+
+    public Parlor(int id, String name, String address, int studio_id, String description, String contact, String coord_x, String coord_y, String pic1_url, String pic2_url, String pic3_url) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -34,6 +60,9 @@ public class Parlor {
         this.contact = contact;
         this.coord_x = coord_x;
         this.coord_y = coord_y;
+        this.pic1_url = pic1_url;
+        this.pic2_url = pic2_url;
+        this.pic3_url = pic3_url;
     }
 
     public Parlor() {
@@ -101,6 +130,22 @@ public class Parlor {
 
     public void setCoord_y(String coord_y) {
         this.coord_y = coord_y;
+    }
+
+    public String getPic1_url() {
+        return pic1_url;
+    }
+
+    public void setPic1_url(String pic1_url) {
+        this.pic1_url = pic1_url;
+    }
+
+    public String getPic3_url() {
+        return pic3_url;
+    }
+
+    public void setPic3_url(String pic3_url) {
+        this.pic3_url = pic3_url;
     }
 }
 

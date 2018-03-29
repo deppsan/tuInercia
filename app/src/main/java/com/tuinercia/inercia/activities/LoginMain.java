@@ -19,7 +19,8 @@ import com.tuinercia.inercia.fragments.LoginOptionFragment;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 public class LoginMain extends AppCompatActivity implements LoginOptionFragment.LoginOptionListener
-                                                            , LoginFragment.LoginListener{
+                                                            , LoginFragment.LoginListener
+                                                            , CrearCuentaFragment.CrearCuentaListener{
 
     FrameLayout frame_content;
 
@@ -39,8 +40,6 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
         }else{
             addFragment(R.id.frame_content, new LoginOptionFragment(),LoginOptionFragment.FRAGMENT_TAG);
         }
-
-
     }
 
     public void addFragment(@IdRes int containerViewId,
@@ -85,7 +84,11 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
         Intent intent = new Intent(this,MainPage.class);
         startActivity(intent);
         finish();
+    }
 
+    @Override
+    public void onCrearCuenta(String FragmentAnterior) {
+        replaceFragment(R.id.frame_content,new LoginFragment(),LoginFragment.FRAGMENT_TAG,FragmentAnterior);
     }
 }
 

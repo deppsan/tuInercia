@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.tuinercia.inercia.DTO.Disciplines;
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.adapter.ReservacionClasesAdapter;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetDiciplinasListenerImpl;
 import com.tuinercia.inercia.network.InerciaApiClient;
@@ -36,7 +38,6 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
         View v = inflater.inflate(R.layout.fragment_reservacion_clases,container,false);
 
         grid_clases = (GridView) v.findViewById(R.id.grid_clases);
-        ArrayList<Integer> i = new ArrayList<>();
 
         inerciaApiGetDiciplinasListener = new InerciaApiGetDiciplinasListenerImpl(this);
         InerciaApiClient.getInstance(getContext()).getDiciplinas(inerciaApiGetDiciplinasListener);
@@ -51,11 +52,13 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        listener.onClaseSeleccionada(this.FRAGMENT_TAG);
+        ReservacionClasesAdapter adapter  = (ReservacionClasesAdapter) parent.getAdapter();
+        Disciplines d = (Disciplines) adapter.getItem(position);
+        listener.onClaseSeleccionada(this.FRAGMENT_TAG,d);
     }
 
     public interface ReservacionClasesListener{
-        void onClaseSeleccionada(String fragmentTAG);
+        void onClaseSeleccionada(String fragmentTAG, Disciplines disciplineSelected);
     }
 
     @Override

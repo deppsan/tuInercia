@@ -32,7 +32,7 @@ public class InerciaApiValidarUsuarioImpl implements InerciaApiValidarUsuario {
     }
 
     @Override
-    public void onUsuarioIncorrecto() {
+    public void onUsuarioIncorrecto(String errorMessage) {
         loginFragment.getView_group_login().setClickable(true);
         loginFragment.getView_group_progress_bar().setVisibility(View.GONE);
         loginFragment.messageWrongLogin();

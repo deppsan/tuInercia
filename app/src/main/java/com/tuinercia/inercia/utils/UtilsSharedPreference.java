@@ -20,6 +20,7 @@ public class UtilsSharedPreference {
     private static final String IS_LOGGED_IN = "isLoggedIn";
     private static final String USER_EMAIL = "UserEmail";
     private static final String USER_ID = "UserId";
+    private static final String TYPE_ACCOUNT = "typeAccount";
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor editor;
@@ -82,5 +83,15 @@ public class UtilsSharedPreference {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(i);
+    }
+
+    public void set_type_account(boolean payment){
+        editor.putBoolean(TYPE_ACCOUNT, payment);
+        editor.commit();
+    }
+
+    public boolean get_type_account(){
+        boolean accountType = preferences.getBoolean(TYPE_ACCOUNT,false);
+        return accountType;
     }
 }

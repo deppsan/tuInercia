@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,14 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Marker;
+import com.tuinercia.inercia.DTO.Disciplines;
 import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.AgendaFragment;
-import com.tuinercia.inercia.fragments.PagosWebViewFragment;
+import com.tuinercia.inercia.fragments.PagosFormularioAltaFragment;
+import com.tuinercia.inercia.fragments.PagosInicioFragment;
 import com.tuinercia.inercia.fragments.ReservacionClasesFragment;
 import com.tuinercia.inercia.fragments.ReservacionGeolocalizacionFragment;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
@@ -38,7 +37,8 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 public class MainPage extends AppCompatActivity implements ReservacionClasesFragment.ReservacionClasesListener
                                                         , ReservacionGeolocalizacionFragment.ReservacionGeolocalizacionListener
-                                                        , NavigationView.OnNavigationItemSelectedListener{
+                                                        , NavigationView.OnNavigationItemSelectedListener
+                                                        , PagosInicioFragment.PagosInicioListener{
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
@@ -48,6 +48,7 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     Menu menu;
 
     static final String INTENT_EXTRA_HEADER = "parlor";
+    static final String INTENT_EXTRA_HEADER_DISCIPLINE = "discipline";
 
     private String[] array_titles;
     ChangeTitleImpl changeTitle;
@@ -121,8 +122,14 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     }
 
     @Override
-    public void onClaseSeleccionada(String fragmentTAG) {
-        replaceFragment(R.id.frame_content_main,new ReservacionGeolocalizacionFragment(), ReservacionGeolocalizacionFragment.FRAGMENT_TAG,fragmentTAG);
+    public void onClaseSeleccionada(String fragmentTAG, Disciplines disciplineSelected) {
+        ReservacionGeolocalizacionFragment fragment = new ReservacionGeolocalizacionFragment();
+
+        Bundle args = new Bundle();
+        args.putString(fragment.DISCIPLINE_ARGS, InerciaApiClient.gson.toJson(disciplineSelected));
+
+        fragment.setArguments(args);
+        replaceFragment(R.id.frame_content_main, fragment, fragment.FRAGMENT_TAG, fragmentTAG);
     }
 
 
@@ -142,10 +149,11 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     }
 
     @Override
-    public void onClickMarkerInfoWindow(Parlor parlor) {
+    public void onClickMarkerInfoWindow(Parlor parlor, String discipline) {
         Intent i = new Intent(this,EstudioAgenda.class);
         String json_parlor = InerciaApiClient.getInstance(this).gson.toJson(parlor,Parlor.class);
-        i.putExtra(INTENT_EXTRA_HEADER,json_parlor);
+        i.putExtra(INTENT_EXTRA_HEADER, json_parlor);
+        i.putExtra(INTENT_EXTRA_HEADER_DISCIPLINE, discipline);
         startActivity(i);
     }
 
@@ -153,7 +161,7 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment    = null;
         String previousTAG = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag()
-                            , newTag = "";
+                           , newTag = "";
 
         switch (item.getItemId()){
             case R.id.nav_home:
@@ -161,8 +169,8 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
                 newTag = ReservacionClasesFragment.FRAGMENT_TAG;
                 break;
             case R.id.nav_pagos:
-                fragment = new PagosWebViewFragment();
-                newTag = PagosWebViewFragment.FRAGMENT_TAG;
+                fragment = new PagosInicioFragment();
+                newTag = PagosFormularioAltaFragment.FRAGMENT_TAG;
                 break;
             case R.id.nav_mis_clases:
                 fragment = new AgendaFragment();
@@ -193,5 +201,11 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     protected void onResume() {
         super.onResume();
         UtilsSharedPreference.getInstance(getApplicationContext()).checkLogin();
+    }
+
+    @Override
+    public void onClickMejorarPlan() {
+        String previousTag = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag();
+        replaceFragment(R.id.frame_content_main, new PagosFormularioAltaFragment(), PagosFormularioAltaFragment.FRAGMENT_TAG, previousTag);
     }
 }

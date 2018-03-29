@@ -19,9 +19,9 @@ public class EstudioSeleccionSemanaAdapter extends BaseAdapter {
     Context mContext;
     String[] array_list;
 
-    public EstudioSeleccionSemanaAdapter(Context mContext) {
+    public EstudioSeleccionSemanaAdapter(Context mContext,String[] array_list) {
         this.mContext = mContext;
-        array_list = mContext.getResources().getStringArray(R.array.array_letra_semana);
+        this.array_list = array_list;
     }
 
     @Override

@@ -43,6 +43,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
+import com.tuinercia.inercia.DTO.Disciplines;
 import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.DTO.Zone;
 import com.tuinercia.inercia.R;
@@ -53,6 +56,8 @@ import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Created by ricar on 25/09/2017.
@@ -76,9 +81,11 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     boolean permisosNoOtorgados = false;
     int currentSpinnerOption = 0;
     int permissionCheck;
+    Disciplines disciplineSelected;
     ReservacionGeolocalizacionListener listener;
 
     public static final String FRAGMENT_TAG = "ReservacionGeolocalizacionFragment";
+    public static final String DISCIPLINE_ARGS = "discipline";
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 0;
     private static final int TITLE = 1;
 
@@ -100,7 +107,8 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
         custom_info_view = getLayoutInflater(savedInstanceState).inflate(R.layout.object_maps_info_window,null);
 
-        InerciaApiClient.getInstance(getActivity().getBaseContext()).getAllZones(inerciaApiGetZonesListener);
+        disciplineSelected = InerciaApiClient.gson.fromJson(getArguments().getString(DISCIPLINE_ARGS),Disciplines.class);
+
 
         mMap.onCreate(savedInstanceState);
         mMap.onResume();
@@ -123,6 +131,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         inerciaApiGetParlorsListener = new InerciaApiGetParlorsListenerImpl(this);
         inerciaApiGetZonesListener = new InerciaApiGetZonesListenerImpl(this);
 
+        InerciaApiClient.getInstance(getActivity().getBaseContext()).getAllZones(inerciaApiGetZonesListener);
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
         return v;
@@ -215,7 +224,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
-        InerciaApiClient.getInstance(mContext).getParlorsByDicipline("Yoga",inerciaApiGetParlorsListener);
+        InerciaApiClient.getInstance(mContext).getParlorsByDicipline(disciplineSelected.getName(),inerciaApiGetParlorsListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -280,7 +289,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         int i = Integer.parseInt(marker.getTitle());
         Parlor p  = res_parlors.get(i);
 
-        listener.onClickMarkerInfoWindow(p);
+        listener.onClickMarkerInfoWindow(p,disciplineSelected.getId());
     }
 
     @Override
@@ -319,7 +328,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     }
 
     public interface ReservacionGeolocalizacionListener{
-        void onClickMarkerInfoWindow(Parlor parlor);
+        void onClickMarkerInfoWindow(Parlor parlor, String discipline);
     }
 
     @Override
@@ -371,6 +380,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
             text_info_description.setText(p.getDescription());
             text_info_title.setText(p.getName());
+
+            Picasso mPicasso = Picasso.with(mContext);
+            mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio);
 
             button_ver_clase_info.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);
 

@@ -35,7 +35,7 @@ public class InerciaApiGetZonesListenerImpl implements InerciaApiGetZonesListene
     }
 
     @Override
-    public void onZonesNoReceived() {
+    public void onZonesNoReceived(String errorMessage) {
         DialogFragment dialog = new ErrorConexionDialog();
         dialog.show(reservacionGeolocalizacionFragment.getFragmentManager(),reservacionGeolocalizacionFragment.FRAGMENT_TAG);
     }

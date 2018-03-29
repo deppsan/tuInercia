@@ -8,6 +8,6 @@ import com.tuinercia.inercia.DTO.User;
 
 public interface InerciaApiValidarUsuario {
     void onUsuarioCorrecto(User user);
-    void onUsuarioIncorrecto();
+    void onUsuarioIncorrecto(String errorMessage);
     void onErrorServer();
 }

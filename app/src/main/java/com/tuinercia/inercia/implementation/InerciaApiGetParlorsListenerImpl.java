@@ -1,15 +1,13 @@
 package com.tuinercia.inercia.implementation;
 
-import android.app.Dialog;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.DialogFragment;
-import android.widget.ArrayAdapter;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tuinercia.inercia.DTO.Parlor;
-import com.tuinercia.inercia.DTO.Zone;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.ReservacionGeolocalizacionFragment;
 import com.tuinercia.inercia.fragments.dialogs.ErrorConexionDialog;
@@ -35,17 +33,26 @@ public class InerciaApiGetParlorsListenerImpl implements InerciaApiGetParlorsLis
         reservacionGeolocalizacionFragment.res_parlors = parlors;
         int i = 0;
         for (Parlor p : reservacionGeolocalizacionFragment.res_parlors){
+            MarkerOptions marker;
+            try{
+                // create marker
+                marker = new MarkerOptions().position(new LatLng(Double.parseDouble(p.getCoord_x()),Double.parseDouble(p.getCoord_y()))).title(Integer.toString(i));
+                // Changing marker icon
+                marker.icon(BitmapDescriptorFactory.fromBitmap(
+                        BitmapFactory.decodeResource(reservacionGeolocalizacionFragment.getContext().getResources(), R.drawable.tag_map)
+                ));
+                // adding marker
+                reservacionGeolocalizacionFragment.gMap.addMarker(marker);
 
-            // create marker
-            MarkerOptions marker = new MarkerOptions().position(
-                    new LatLng(Double.parseDouble(p.getCoord_y()),Double.parseDouble(p.getCoord_x()))).title(Integer.toString(i));
-            // Changing marker icon
-            marker.icon(BitmapDescriptorFactory.fromBitmap(
-                    BitmapFactory.decodeResource(reservacionGeolocalizacionFragment.getContext().getResources(), R.drawable.tag_map)
-            ));
-            // adding marker
-            reservacionGeolocalizacionFragment.gMap.addMarker(marker);
-
+                if (!p.getPic1_url().substring(0,5).equalsIgnoreCase("http:")){
+                    if (!p.getPic1_url().substring(0,6).equalsIgnoreCase("https:")){
+                        p.setPic1_url("http:" + p.getPic1_url());
+                    }
+                }
+            }catch(Exception e){
+                Log.e(getClass().getName(),e.getMessage());
+                e.getStackTrace();
+            }
             i++;
         }
         reservacionGeolocalizacionFragment.gMap.setOnInfoWindowClickListener(reservacionGeolocalizacionFragment);
@@ -54,7 +61,7 @@ public class InerciaApiGetParlorsListenerImpl implements InerciaApiGetParlorsLis
     }
 
     @Override
-    public void onFailChargeParlors() {
+    public void onFailChargeParlors(String errorMessage) {
         DialogFragment dialog = new ErrorConexionDialog();
         dialog.show(reservacionGeolocalizacionFragment.getFragmentManager(),reservacionGeolocalizacionFragment.FRAGMENT_TAG);
     }

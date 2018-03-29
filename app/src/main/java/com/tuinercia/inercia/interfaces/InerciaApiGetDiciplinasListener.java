@@ -10,6 +10,6 @@ import java.util.ArrayList;
 
 public interface InerciaApiGetDiciplinasListener {
     void chargeDiciplinas(Disciplines[] disciplines);
-    void failChargeDiciplines();
+    void failChargeDiciplines(String errorMessage);
     void onErrorServer(int statusCode);
 }

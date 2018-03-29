@@ -7,6 +7,9 @@
     <string name="btn_login_check">Aceptar</string>
     <string name="btn_check_in">CHECK IN</string>
     <string name="btn_cancelar">CANCELAR</string>
+    <string name="btn_agendar">AGENDAR</string>
+    <string name="btn_mejorar_plan">Mejorar mi plan</string>
+    <string name="btn_cancelar_plan">CANCELAR PLAN</string>
 
     <!--Labels-->
     <string name="textview_email">E-MAIL</string>
@@ -20,6 +23,12 @@
     <string name="radio_hombre">Hombre</string>
     <string name="title_main">Mi Adrenalina</string>
     <string name="title_all">Todo</string>
+    <string name="label_sin_plan">Accesa a todas las clases que quieras, cuando quieras, donde quieras. Comienza adquieriendo tu membresía inercia.</string>
+    <string name="label_plan_actual">Tu plan actual es: </string>
+    <string name="label_plan_costo">Con un costo de $ </string>
+    <string name="label_plan_incluye">Incluye </string>
+    <string name="label_plan_clases"> clases</string>
+    <string name="label_plan_caducidad_">Próxima Renovación: </string>
 
     <!--Menu-->
     <string name="nav_logOut">Salir</string>
@@ -45,19 +54,20 @@
     <string name="asdf">Avenida SiempreViva  #1234, Lomas de Springfield : </string>
 
     <string-array name="array_letra_semana">
-        <item>L</item>
-        <item>M</item>
-        <item>M</item>
-        <item>J</item>
-        <item>V</item>
-        <item>S</item>
-        <item>D</item>
+        <item>DOM</item>
+        <item>LUN</item>
+        <item>MAR</item>
+        <item>MIE</item>
+        <item>JUE</item>
+        <item>VIE</item>
+        <item>SAB</item>
     </string-array>
 
     <string-array name="array_titles">
         <item>Mi Adrenalina</item>
         <item>Estudios Cerca</item>
         <item>Mis Clases</item>
+        <item>Mi Cuenta</item>
     </string-array>
 
     <!--Tab Titles-->
@@ -73,5 +83,16 @@
     <string name="dialog_title_error_server">¡No te rindas!</string>
     <string name="dialog_message_error_server">Estamos mejorando para ejercitarte mejor. Intenta mas tarde</string>
     <string name="dialog_meesage_crear_cuenta">¡Listo para tonificar! Comencemos</string>
+    <string name="dialog_title_confirmar_reservacion">¿Deseas reservar esta clase? </string>
+    <string name="dialog_message_confirmar_reservacion">Recuerda puedes cancelar hasta 5 hrs antes de tu clase</string>
+    <string name="dialog_confirmar_reservacion_button_positive">Si</string>
+    <string name="dialog_confirmar_reservacion_button_negative">No</string>
+    <string name="dialog_confirmar_cancelacion_title">Uy!</string>
+    <string name="dialog_confirmar_cancelacion_message">Estás seguro que quieres cancelar tu clase</string>
+    <string name="custom_dialog_cvv_exp_message">Un código de tres dígitos ubicado al reverso de tu tarjeta de crédito.</string>
+    <string name="custom_dialog_cvv_exp_title">CVV</string>
+    <string name="custom_dialog_vencimiento_exp_message">Encontrarás esta fecha en el frente de tu tarjeta, debajo del número de tarjeta.</string>
+    <string name="custom_dialog_vencimiento_exp_title">Fecha de Vto.</string>
+
 
 </resources>
