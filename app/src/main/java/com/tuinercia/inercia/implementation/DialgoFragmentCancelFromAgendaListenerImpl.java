@@ -23,6 +23,6 @@ public class DialgoFragmentCancelFromAgendaListenerImpl implements DialgoFragmen
 
     @Override
     public void onConfirmaCanccelacionReservacion(int id) {
-        InerciaApiClient.getInstance(estudioAgenda).cancelBooking(Integer.toString(estudioAgenda.getUser().getId()),Integer.toString(id),estudioAgenda.getInerciaApiCancelBookingListener());
+        InerciaApiClient.getInstance(estudioAgenda).cancelBooking(Integer.toString(estudioAgenda.getUser().getId()),Integer.toString(id),estudioAgenda.getInerciaApiCancelBookingListener(), estudioAgenda.getLoadingViewManager());
     }
 }

@@ -10,15 +10,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.tuinercia.inercia.DTO.Reservation;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.dialogs.ConfirmarCancelarReservacionDialog;
 import com.tuinercia.inercia.implementation.DialgoFragmentCancelFromAgendaPasadaListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiCancelBookingListenerAgendaImpl;
 import com.tuinercia.inercia.implementation.InerciaApiCheckInBookingListenerAgendaImpl;
+import com.tuinercia.inercia.implementation.InerciaApiGetBookingHistoryListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiPendingBookingListenerImpl;
+import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
+import com.tuinercia.inercia.interfaces.InerciaApiGetBookingHistoryListener;
+import com.tuinercia.inercia.interfaces.LoadingViewManager;
 import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
+
+import java.util.HashMap;
 
 /**
  * Created by ricar on 17/10/2017.
@@ -28,6 +35,7 @@ public class AgendaActualFragment extends Fragment {
 
     ListView list_agenda;
     Button button_selected;
+    View view;
 
     User user;
     Context mContext;
@@ -36,13 +44,15 @@ public class AgendaActualFragment extends Fragment {
     InerciaApiCancelBookingListenerAgendaImpl inerciaApiCancelBookingListenerAgenda;
     DialgoFragmentCancelFromAgendaPasadaListenerImpl dialgoFragmentCancelFromAgendaPasadaListener;
     InerciaApiCheckInBookingListenerAgendaImpl inerciaApiCheckInBookingListenerAgenda;
+    LoadingViewManagerImpl loadingViewManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_list_view_general, container, false);
+        View v = inflater.inflate(R.layout.fragment_mis_clases_agenda, container, false);
 
         list_agenda = (ListView) v.findViewById(R.id.list_general);
+        view = v.findViewById(R.id.loading_view);
 
         user = UtilsSharedPreference.getInstance(getActivity()).getUser();
         mContext = getContext();
@@ -51,8 +61,9 @@ public class AgendaActualFragment extends Fragment {
         inerciaApiCancelBookingListenerAgenda = new InerciaApiCancelBookingListenerAgendaImpl(this);
         dialgoFragmentCancelFromAgendaPasadaListener = new DialgoFragmentCancelFromAgendaPasadaListenerImpl(this);
         inerciaApiCheckInBookingListenerAgenda = new InerciaApiCheckInBookingListenerAgendaImpl(this);
+        loadingViewManager = new LoadingViewManagerImpl(view);
 
-        InerciaApiClient.getInstance(getActivity()).pendingBookin(Integer.toString(user.getId()), inerciaApiPendingBookingListener);
+        InerciaApiClient.getInstance(getActivity()).pendingBookin(Integer.toString(user.getId()), inerciaApiPendingBookingListener, loadingViewManager);
 
         return v;
     }
@@ -103,7 +114,7 @@ public class AgendaActualFragment extends Fragment {
     }
 
     public void CheckInReservacion(String idReservacion) {
-        InerciaApiClient.getInstance(mContext).checkInBooking(Integer.toString(user.getId()),idReservacion, inerciaApiCheckInBookingListenerAgenda);
+        InerciaApiClient.getInstance(mContext).checkInBooking(Integer.toString(user.getId()),idReservacion, inerciaApiCheckInBookingListenerAgenda, loadingViewManager);
     }
 
 
@@ -111,4 +122,7 @@ public class AgendaActualFragment extends Fragment {
         return inerciaApiCancelBookingListenerAgenda;
     }
 
+    public LoadingViewManager getLoadingViewManager(){
+        return loadingViewManager;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,13 @@ import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
+
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by ricar on 18/09/2017.
@@ -40,6 +48,7 @@ public class LoginOptionFragment extends Fragment implements View.OnClickListene
 
         return v;
     }
+
 
     @Override
     public void onClick(View v) {

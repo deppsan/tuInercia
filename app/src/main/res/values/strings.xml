@@ -9,7 +9,10 @@
     <string name="btn_cancelar">CANCELAR</string>
     <string name="btn_agendar">AGENDAR</string>
     <string name="btn_mejorar_plan">Mejorar mi plan</string>
-    <string name="btn_cancelar_plan">CANCELAR PLAN</string>
+    <string name="btn_cancelar_plan"><u>Cancelar plan</u></string>
+    <string name="btn_log_out">Cerrar Sesión</string>
+    <string name="btn_next">Siguiente</string>
+    <string name="btn_crear">Crear</string>
 
     <!--Labels-->
     <string name="textview_email">E-MAIL</string>
@@ -29,6 +32,14 @@
     <string name="label_plan_incluye">Incluye </string>
     <string name="label_plan_clases"> clases</string>
     <string name="label_plan_caducidad_">Próxima Renovación: </string>
+    <string name="label_prompt_planes">Elije tu plan</string>
+    <string name="label_error_email_no_coincide">Los campos de correo no coinciden</string>
+    <string name="label_error_password_no_coincide">Los campos de contraseña no coinciden</string>
+    <string name="label_error_correo_formato_valido">El correo otorgado debe de tener un formato valido.</string>
+    <string name="label_terminos_condiciones">Acepto  <u>Términos y Condiciones</u></string>
+    <string name="label_error_terminos_condiciones">Debes aceptar los Términos y Condiciones para crear tu cuenta Inercia.</string>
+    <string name="label_campo_obligatorio">Campo obligatorio</string>
+
 
     <!--Menu-->
     <string name="nav_logOut">Salir</string>
@@ -39,19 +50,11 @@
     <string name="nav_mis_clases">Mis Clases</string>
 
 
-    <string-array name="array_zonas">
-        <item>Mi ubicación</item>
-        <item>Cumbres</item>
-        <item>Tecnologico</item>
-        <item>Valle Oriente</item>
-    </string-array>
-
     <!--Seccion de Estudio agenda-->
     <string name="our_excer">NUESTRO EJERCICIO</string>
     <string name="label_agenda_clase">AGENDA TU CLASE: </string>
     <string name="label_orientacion_agenda">ORIÉNTAME</string>
     <string name="label_direccion">DIRECCION: </string>
-    <string name="asdf">Avenida SiempreViva  #1234, Lomas de Springfield : </string>
 
     <string-array name="array_letra_semana">
         <item>DOM</item>
@@ -62,12 +65,58 @@
         <item>VIE</item>
         <item>SAB</item>
     </string-array>
-
     <string-array name="array_titles">
         <item>Mi Adrenalina</item>
         <item>Estudios Cerca</item>
         <item>Mis Clases</item>
         <item>Mi Cuenta</item>
+    </string-array>
+    <string-array name="array_day">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+    </string-array>
+    <string-array name="array_month">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
     </string-array>
 
     <!--Tab Titles-->
@@ -93,6 +142,8 @@
     <string name="custom_dialog_cvv_exp_title">CVV</string>
     <string name="custom_dialog_vencimiento_exp_message">Encontrarás esta fecha en el frente de tu tarjeta, debajo del número de tarjeta.</string>
     <string name="custom_dialog_vencimiento_exp_title">Fecha de Vto.</string>
-
+    <string name="dialog_title_create_payment">Danos unos minutos... estamos procesando el pago con tu banco</string>
+    <string name="dialog_message_create_payment">¡Pronto podrás descubrir nuevas clases y agendar las que más te gusten!</string>
+    <string name="dialog_end_message_create_payment">Sabrás que tu pago fue autorizado en esta sección de tu cuenta</string>
 
 </resources>

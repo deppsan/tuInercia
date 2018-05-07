@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Membership {
 
+    @SerializedName("id")
+    String id;
     @SerializedName("name")
     String name;
     @SerializedName("amount")
@@ -54,5 +56,13 @@ public class Membership {
 
     public void setNum_classes(int num_classes) {
         this.num_classes = num_classes;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

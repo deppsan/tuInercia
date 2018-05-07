@@ -33,6 +33,9 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
     public static final String FRAGMENT_TAG = "LoginFragment";
+    private static final String USER_PARAM = "userParam";
+    private static final String WIHT_DATA_PARAM = "whitData";
+    private static final String PASSWORD_PARAM = "passwordParam";
     LoginListener listener;
 
     EditText text_contraseña_login,text_email_login;
@@ -61,8 +64,28 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         btn_login.setOnClickListener(this);
 
         inerciaApiValidarUsuario = new InerciaApiValidarUsuarioImpl(this);
+        
+        if (getArguments().getBoolean(WIHT_DATA_PARAM)){
+            InerciaApiClient.getInstance(getContext())
+                    .validarUsuario( getArguments().getString(USER_PARAM)
+                            , getArguments().getString(PASSWORD_PARAM)
+                            ,inerciaApiValidarUsuario);
+        }
 
         return v;
+    }
+
+    public static LoginFragment getInstance(@Nullable String user,@Nullable String password, boolean withData){
+        LoginFragment fragment = new LoginFragment();
+        Bundle args = new Bundle();
+        if (withData){
+            args.putString(USER_PARAM, user);
+            args.putString(PASSWORD_PARAM, password);
+        }
+        args.putBoolean(WIHT_DATA_PARAM, withData);
+        fragment.setArguments(args);
+        
+        return fragment;
     }
 
     @Override

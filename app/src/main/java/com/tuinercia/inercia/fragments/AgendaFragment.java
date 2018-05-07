@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 
-import java.util.ArrayList;
-
 /**
  * Created by ricar on 17/10/2017.
  */
@@ -31,7 +29,7 @@ public class AgendaFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_agenda_pasada,container,false);
+        View v = inflater.inflate(R.layout.fragment_mis_clases,container,false);
 
         tabLayout = (TabLayout) v.findViewById(R.id.tablayout_agenda_pasada);
         viewPager = (ViewPager) v.findViewById(R.id.view_pager_agenda_pasada);
@@ -67,7 +65,7 @@ public class AgendaFragment extends Fragment {
                 case 0:
                     return new AgendaActualFragment();
                 case 1:
-                    return new AgendaActualFragment();
+                    return new AgendaHistoryFragment();
                 default:
                     return null;
             }

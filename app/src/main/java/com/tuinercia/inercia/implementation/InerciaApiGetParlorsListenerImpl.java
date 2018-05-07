@@ -50,7 +50,6 @@ public class InerciaApiGetParlorsListenerImpl implements InerciaApiGetParlorsLis
                     }
                 }
             }catch(Exception e){
-                Log.e(getClass().getName(),e.getMessage());
                 e.getStackTrace();
             }
             i++;

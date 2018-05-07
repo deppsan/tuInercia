@@ -13,6 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tuinercia.inercia.interfaces.LoadingViewManager;
 
 import org.json.JSONObject;
 
@@ -40,6 +41,30 @@ public class conexionHTTP{
 
     public conexionHTTP() { }
 
+    public void postJsonResponse(Context context, String url, final HashMap<String,String> params, final VolleyCallback callback, final LoadingViewManager loadingViewManager){
+        loadingViewManager.showLoadingView();
+        queue = Volley.newRequestQueue(context);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                        loadingViewManager.hideLoadingView();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if(error.networkResponse != null){
+                    callback.onError(error.networkResponse.statusCode);
+                }else {
+                    callback.onError(500);
+                }
+                loadingViewManager.hideLoadingView();
+            }
+        });
+        queue.add(jsonObjectRequest);
+    }
+
     public void postJsonResponse(Context context, String url, final HashMap<String,String> params, final VolleyCallback callback){
         queue = Volley.newRequestQueue(context);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(params),
@@ -49,15 +74,15 @@ public class conexionHTTP{
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse != null){
-                            callback.onError(error.networkResponse.statusCode);
-                        }else {
-                            callback.onError(500);
-                        }
-                    }
-                });
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if(error.networkResponse != null){
+                    callback.onError(error.networkResponse.statusCode);
+                }else {
+                    callback.onError(500);
+                }
+            }
+        });
         queue.add(jsonObjectRequest);
     }
 

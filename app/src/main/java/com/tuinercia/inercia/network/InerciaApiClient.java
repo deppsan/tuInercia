@@ -1,10 +1,12 @@
 package com.tuinercia.inercia.network;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tuinercia.inercia.DTO.Disciplines;
+import com.tuinercia.inercia.DTO.History;
 import com.tuinercia.inercia.DTO.Membership;
 import com.tuinercia.inercia.DTO.MembershipProgress;
 import com.tuinercia.inercia.DTO.Parlor;
@@ -16,16 +18,19 @@ import com.tuinercia.inercia.DTO.Zone;
 import com.tuinercia.inercia.interfaces.InerciaApiCancelBookingListener;
 import com.tuinercia.inercia.interfaces.InerciaApiCheckInBookingListener;
 import com.tuinercia.inercia.interfaces.InerciaApiCreateBookingListener;
+import com.tuinercia.inercia.interfaces.InerciaApiCreatePaymentListener;
 import com.tuinercia.inercia.interfaces.InerciaApiCreateUserListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetBookingHistoryListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetCurrentMembershipListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetDiciplinasListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetDisciplinesByIdListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetParlorsListener;
+import com.tuinercia.inercia.interfaces.InerciaApiGetPlanesInerciaListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetScheduleByParlorListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetZonesListener;
 import com.tuinercia.inercia.interfaces.InerciaApiPendingBookingListener;
 import com.tuinercia.inercia.interfaces.InerciaApiValidarUsuario;
+import com.tuinercia.inercia.interfaces.LoadingViewManager;
 import com.tuinercia.inercia.network.conection.conexionHTTP;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
@@ -57,7 +62,7 @@ public class InerciaApiClient {
         this.mContext = mContext;
     }
     
-    public void getCurrentMemberShip(String email, String password, final InerciaApiGetCurrentMembershipListener listener){
+    public void getCurrentMemberShip(String email, String password, final InerciaApiGetCurrentMembershipListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
         params.put(PASSWORD_HEAD_PARAM, password);
         params.put(EMAIL_HEAD_PARAM, email);
@@ -70,8 +75,11 @@ public class InerciaApiClient {
                             if (response.getBoolean(VALIDATION_RESULT_NAME)){
                                 Membership membership = gson.fromJson(response.getString(PLAN_RESULT_NAME),Membership.class);
                                 MembershipProgress membershipProgress = gson.fromJson(response.getString(PROGRESS_RESULT_NAME), MembershipProgress.class);
+                                boolean show_progress = response.getBoolean(SHOW_PROGRESS_RESULT_NAME);
 
-                                listener.onGetCurrentMembershipSuccess(membership, membershipProgress);
+                                UtilsSharedPreference.getInstance(mContext).set_type_account(response.getBoolean(VALIDATION_RESULT_NAME));
+
+                                listener.onGetCurrentMembershipSuccess(membership, membershipProgress, show_progress);
 
                             }else{
                                 listener.onGetCurrentMembershipError(response.getString(ERROR_MESSAGE_NAME));
@@ -85,14 +93,16 @@ public class InerciaApiClient {
                     public void onError(int statusCode) {
                         listener.onErrorServer(statusCode);
                     }
-                });
+                },loadingViewManager);
     }
     
-    public void checkInBooking(String userID, String reservationID, final InerciaApiCheckInBookingListener listener){
+    public void checkInBooking(String userID, String reservationID, final InerciaApiCheckInBookingListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
 
         params.put(USER_ID_HEAD_PARAM, userID);
         params.put(RESERVATION_ID_HEAD_PARAM, reservationID);
+
+        
 
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CHECKIN_BOOKING_URL, params,
                 new conexionHTTP.VolleyCallback() {
@@ -113,14 +123,16 @@ public class InerciaApiClient {
                     public void onError(int statusCode) {
                         listener.onErrorServer(statusCode);
                     }
-                });
+                }
+                ,loadingViewManager);
     }
     
-    public void cancelBooking(String userID, String reservationID, final InerciaApiCancelBookingListener listener){
+    public void cancelBooking(String userID, String reservationID, final InerciaApiCancelBookingListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
 
         params.put(USER_ID_HEAD_PARAM, userID);
         params.put(RESERVATION_ID_HEAD_PARAM, reservationID);
+        loadingViewManager.hideLoadingView();
     
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CANCEL_BOOKING_URL, params,
             new conexionHTTP.VolleyCallback() {
@@ -142,15 +154,15 @@ public class InerciaApiClient {
                     listener.onErrorServer(statusCode);
                 }
             }
-        );
+        ,loadingViewManager);
     }
 
-    public void getScheduleByParlor(int discipline, int parlor, int userID, final InerciaApiGetScheduleByParlorListener listener){
+    public void getScheduleByParlor(int discipline, int parlor, int userID, final InerciaApiGetScheduleByParlorListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
         params.put(DISCIPLINE_HEAD_PARAM, Integer.toString(discipline));
         params.put(PARLOR_ID_HEAD_PARAM, Integer.toString(parlor));
         params.put(USER_ID_HEAD_PARAM, Integer.toString(userID));
-
+        
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + SCHEDULE_BY_PARLOR_URL, params,
                 new conexionHTTP.VolleyCallback() {
                     @Override
@@ -160,13 +172,13 @@ public class InerciaApiClient {
                                 JSONObject hash_schedules = new JSONObject(response.getString(RESPONSE_SCHEDULES_RESULT_NAME));
                                 JSONObject hash_reservations = new JSONObject(response.getString(RESPONSE_RESERVATIONS_RESULT_NAME));
 
-                                Schedule[] day_today = gson.fromJson(hash_schedules.getString("_day_today"),Schedule[].class);
-                                Schedule[] day_two = gson.fromJson(hash_schedules.getString("_day_two"),Schedule[].class);
-                                Schedule[] day_three = gson.fromJson(hash_schedules.getString("_day_three"),Schedule[].class);
-                                Schedule[] day_four = gson.fromJson(hash_schedules.getString("_day_four"),Schedule[].class);
-                                Schedule[] day_five = gson.fromJson(hash_schedules.getString("_day_five"),Schedule[].class);
-                                Schedule[] day_six = gson.fromJson(hash_schedules.getString("_day_six"),Schedule[].class);
-                                Schedule[] day_seven = gson.fromJson(hash_schedules.getString("_day_seven"),Schedule[].class);
+                                Schedule[] day_today = gson.fromJson(hash_schedules.getString("day_today"),Schedule[].class);
+                                Schedule[] day_two = gson.fromJson(hash_schedules.getString("day_two"),Schedule[].class);
+                                Schedule[] day_three = gson.fromJson(hash_schedules.getString("day_three"),Schedule[].class);
+                                Schedule[] day_four = gson.fromJson(hash_schedules.getString("day_four"),Schedule[].class);
+                                Schedule[] day_five = gson.fromJson(hash_schedules.getString("day_five"),Schedule[].class);
+                                Schedule[] day_six = gson.fromJson(hash_schedules.getString("day_six"),Schedule[].class);
+                                Schedule[] day_seven = gson.fromJson(hash_schedules.getString("day_seven"),Schedule[].class);
 
                                 Reservation[] res_day_today = gson.fromJson(hash_reservations.getString("res_day_today"),Reservation[].class);
                                 Reservation[] res_day_two = gson.fromJson(hash_reservations.getString("res_day_two"),Reservation[].class);
@@ -214,18 +226,18 @@ public class InerciaApiClient {
                     public void onError(int statusCode) {
                         listener.onErrorServer(statusCode);
                     }
-                });
+                },loadingViewManager);
     }
 
-    public void createUser(String email, String password, final InerciaApiCreateUserListener listener){
+    public void createUser(final String email, final String password, String name, String sex, String birthday, boolean terms, final InerciaApiCreateUserListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
-        params.put(NAME_HEAD_PARAM, NAME_APP_DUMMY);
+        params.put(NAME_HEAD_PARAM, name);
         params.put(EMAIL_HEAD_PARAM, email);
-        params.put(PASSWORD_HEAD_PARAM,password);
-        params.put(SEX_HEAD_PARAM, SEX_APP_DUMMY);
-        params.put(BIRTHDAY_HEAD_PARAM, BIRTHDATE_APP_DUMMY);
-        params.put(TERMINOS_DE_SERVICIO,TERMS_APP_DUMMY);
-
+        params.put(PASSWORD_HEAD_PARAM, password);
+        params.put(SEX_HEAD_PARAM, sex);
+        params.put(BIRTHDAY_HEAD_PARAM, birthday);
+        params.put(TERMINOS_DE_SERVICIO, Boolean.toString(terms));
+        
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CREATE_USER_URL, params,
             new conexionHTTP.VolleyCallback() {
                 @Override
@@ -233,7 +245,7 @@ public class InerciaApiClient {
                     try{
                         if (response.getBoolean(VALIDATION_RESULT_NAME)){
                             User user = gson.fromJson(response.getString(USER_RESULT_NAME),User.class);
-                            listener.onCreateUserSuccefull( user );
+                            listener.onCreateUserSuccefull( user , email, password );
                         }else{
                             listener.onCreateUserError(response.getString(ERROR_MESSAGE_NAME));
                         }
@@ -246,46 +258,15 @@ public class InerciaApiClient {
                 public void onError(int statusCode) {
                     listener.onErrorServer(statusCode);
                 }
-            });
+            },loadingViewManager);
+
     }
 
-    public void getDisciplinesById(String id, final InerciaApiGetDisciplinesByIdListener listener){
-        HashMap<String,String> params = new HashMap<>();
-        params.put(ID_HEAD_PARAM,id);
-
-        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + DISCIPLINE_BY_ID_URL, params,
-                new conexionHTTP.VolleyCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        try{
-                            if (response.getBoolean(VALIDATION_RESULT_NAME)){
-                                Disciplines discipline = gson.fromJson(response.getString(DISCIPLINE_RESULT_NAME),Disciplines.class);
-                                Disciplines complement = gson.fromJson(response.getString(COMPLEMENT_RESULT_NAME),Disciplines.class);
-                                HashMap<String,Disciplines> result = new HashMap<>();
-
-                                result.put(DISCIPLINE_RESULT_NAME, discipline);
-                                result.put(COMPLEMENT_RESULT_NAME, complement);
-
-                                listener.OnGetDisciplinesByIdSuccefull(result);
-                            }else{
-                                listener.onGetDisciplinesByIdError(response.getString(ERROR_MESSAGE_NAME));
-                            }
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                            listener.onGetDisciplinesByIdError(e.getMessage());
-                        }
-                    }
-                    @Override
-                    public void onError(int statusCode) {
-                        listener.onErrorServer(statusCode);
-                    }
-                });
-    }
-
-    public void createBooking(String userID, String scheduleID, final InerciaApiCreateBookingListener listener){
+    public void createBooking(String userID, String scheduleID, final InerciaApiCreateBookingListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
         params.put(USER_ID_HEAD_PARAM, userID);
         params.put(SCHEDULE_ID_HEAD_PARAM, scheduleID);
+        
 
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CREATE_BOOKING_URL, params,
                 new conexionHTTP.VolleyCallback() {
@@ -306,30 +287,27 @@ public class InerciaApiClient {
                     public void onError(int statusCode) {
                         listener.onErrorServer(statusCode);
                     }
-                });
+                },loadingViewManager);
     }
 
     public void getBookingHistory(String userID, final InerciaApiGetBookingHistoryListener listener){
         HashMap<String,String> params = new HashMap<>();
         params.put(USER_ID_HEAD_PARAM, userID);
 
-        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + HISTORIY_BOOKING_URL, params,
+        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + HISTORIY_BOOKING_URL_DOS, params,
             new conexionHTTP.VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
+
                     try{
                         if (response.getBoolean(VALIDATION_RESULT_NAME)){
-                            Reservation res_curr = gson.fromJson(response.getString(RESPONSE_CURRENT_RESULT_NAME),Reservation.class);
-                            Reservation res_prev = gson.fromJson(response.getString(RESPONSE_PREVIOUS_RESULT_NAME),Reservation.class);
-                            Reservation res_prev_2 = gson.fromJson(response.getString(RESPONSE_PREVIOUS_RESULT_2_NAME),Reservation.class);
-                            
-                            HashMap<String,Reservation> reservations = new HashMap<String, Reservation>();
-                            
-                            reservations.put(RESPONSE_CURRENT_RESULT_NAME, res_curr);
-                            reservations.put(RESPONSE_PREVIOUS_RESULT_NAME, res_prev);
-                            reservations.put(RESPONSE_PREVIOUS_RESULT_2_NAME, res_prev_2);
-                            
-                            listener.onGetBookingHistorySuccess(reservations);
+
+                            History[] actual_history = gson.fromJson(response.getString(RESPONSE_CURRENT_RESULT_NAME), History[].class);
+                            History[] prev_history = gson.fromJson(response.getString(RESPONSE_PREVIOUS_RESULT_NAME), History[].class);
+                            History[] ant_prev_history = gson.fromJson(response.getString(RESPONSE_PREVIOUS_RESULT_2_NAME), History[].class);
+
+                            listener.onGetBookingHistorySuccess(actual_history, prev_history, ant_prev_history);
+
                         }else{
                             listener.onGetBookingHistoryError(response.getString(ERROR_MESSAGE_NAME));
                         }
@@ -377,12 +355,13 @@ public class InerciaApiClient {
                 public void onError(int statusCode) {
                     listener.onErrorServer();
                 }
-            }
-        );
+            });
     }
 
-    public void getDiciplinas(final InerciaApiGetDiciplinasListener listener){
+    public void getDiciplinas(final InerciaApiGetDiciplinasListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
+
+        
 
         new conexionHTTP().getInstance().postJsonResponse(mContext,BASE_URL + DICIPLINES_URL, params,
                 new conexionHTTP.VolleyCallback() {
@@ -405,7 +384,7 @@ public class InerciaApiClient {
                         listener.onErrorServer(statusCode);
                     }
                 }
-        );
+        ,loadingViewManager);
     }
 
     public void getParlorsByDicipline(String discipline, final InerciaApiGetParlorsListener listener){
@@ -463,9 +442,11 @@ public class InerciaApiClient {
         });
     }
 
-    public void pendingBookin(String user_id, final InerciaApiPendingBookingListener listener){
+    public void pendingBookin(String user_id, final InerciaApiPendingBookingListener listener, LoadingViewManager loadingViewManager){
         HashMap<String,String> params = new HashMap<>();
         params.put(USER_ID_HEAD_PARAM,user_id);
+
+        
 
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + PENDING_BOOKING_URL, params,
                 new conexionHTTP.VolleyCallback() {
@@ -487,8 +468,66 @@ public class InerciaApiClient {
                     public void onError(int statusCode) {
                         listener.onErrorServer(statusCode);
                     }
-                });
+                },loadingViewManager);
     }
+
+    public void getPlanesInercia(String email, String password, final InerciaApiGetPlanesInerciaListener listener, LoadingViewManager loadingViewManager){
+        HashMap<String,String> params = new HashMap<>();
+        params.put(EMAIL_HEAD_PARAM, email);
+        params.put(PASSWORD_HEAD_PARAM, password);
+        
+        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + MEMBERSHIP_LIST_URL, params,
+            new conexionHTTP.VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    try{
+                        if (response.getBoolean(VALIDATION_RESULT_NAME)){
+                            Membership[] membership = gson.fromJson(response.getString(MEMBERSHIP_RESULT_NAME),Membership[].class);
+                            listener.onGetPlanesListSuccess(membership);
+                        }else{
+                            listener.onGetPlanesListError(response.getString(ERROR_MESSAGE_NAME));
+                        }
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        listener.onGetPlanesListError(e.getMessage());
+                    }
+                }
+                @Override
+                public void onError(int statusCode) {
+                    listener.onErrorServer(statusCode);
+                }
+            },loadingViewManager);
+    }
+
+    public void createPayment(String card_tkn, String user_id, String plan_id, final InerciaApiCreatePaymentListener listener, LoadingViewManager loadingViewManager){
+        HashMap<String,String> params = new HashMap<>();
+        params.put(TOKEN_CARD_HEAD_PARAM, card_tkn);
+        params.put(USER_ID_HEAD_PARAM, user_id);
+        params.put(PLAN_ID_HEAD_PARAM, plan_id);
+        
+        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CREATE_PAYMENT_URL, params,
+                new conexionHTTP.VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try{
+                            if (response.getBoolean(VALIDATION_RESULT_NAME)){
+                                listener.onCreatePaymentSuccess(response.getString(RESPONSE_RESULT_NAME));
+                            }else{
+                                listener.onCreatePaymentError(response.getString(ERROR_MESSAGE_NAME));
+                            }
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                            listener.onCreatePaymentError(e.getMessage());
+                        }
+                    }
+                    @Override
+                    public void onError(int statusCode) {
+                        listener.onErrorServer(statusCode);
+                    }
+                },loadingViewManager);
+    }
+
+
 
     private static final String BASE_URL = "https://inercia-stg.herokuapp.com/inercia_apis/";
     private static final GsonBuilder builder = new GsonBuilder();
@@ -506,6 +545,8 @@ public class InerciaApiClient {
     private static final String RESERVATION_ID_HEAD_PARAM = "reservation_id";
     private static final String PARLOR_ID_HEAD_PARAM = "parlor";
     private static final String TERMINOS_DE_SERVICIO = "terms_of_service";
+    private static final String TOKEN_CARD_HEAD_PARAM = "card_tkn";
+    private static final String PLAN_ID_HEAD_PARAM = "plan_id";
 
     private static final String DICIPLINES_URL = "req_disciplines/";
     private static final String VALIDATE_USER_URL = "validate_user/";
@@ -513,24 +554,19 @@ public class InerciaApiClient {
     private static final String ZONES_URL = "req_zones/";
     private static final String CREATE_USER_URL = "create_user";
     private static final String SCHEDULE_BY_PARLOR_URL = "req_schedules_by_parlor";
-    private static final String DISCIPLINE_BY_ID_URL = "req_disciplines_by_id";
     private static final String CREATE_BOOKING_URL = "create_booking";
     private static final String HISTORIY_BOOKING_URL = "history_booking";
+    private static final String HISTORIY_BOOKING_URL_DOS = "history_booking_2";
     private static final String CANCEL_BOOKING_URL = "cancel_booking";
     private static final String CHECKIN_BOOKING_URL = "checkin_booking";
     private static final String PENDING_BOOKING_URL = "pending_booking";
     private static final String CURRENT_MEMBERSHIP_URL = "req_current_membership";
+    private static final String MEMBERSHIP_LIST_URL = "req_memberships_list";
+    private static final String CREATE_PAYMENT_URL = "create_payment";
 
-
-    private static final String SEX_APP_DUMMY = "M";
-    private static final String TERMS_APP_DUMMY = "true";
-    private static final String NAME_APP_DUMMY = "RegistroApp";
-    private static final String BIRTHDATE_APP_DUMMY = "2018/01/01";
 
     private static final String DISCIPLINES_RESULT_NAME = "disciplines" ;
     private static final String RESERVATION_ID_RESULT_NAME = "reservation_id";
-    private static final String DISCIPLINE_RESULT_NAME = "discipline" ;
-    private static final String COMPLEMENT_RESULT_NAME = "complement";
     private static final String PARLOR_RESULT_NAME = "parlors" ;
     private static final String RESPONSE_RESULT_NAME = "response" ;
     private static final String VALIDATION_RESULT_NAME  = "validation";
@@ -547,6 +583,8 @@ public class InerciaApiClient {
     private static final String PAYED_PLAN_RESULT_NAME = "payed_plan";
     private static final String PLAN_RESULT_NAME = "plan";
     private static final String PROGRESS_RESULT_NAME = "progress";
+    private static final String MEMBERSHIP_RESULT_NAME = "memberships";
+    private static final String SHOW_PROGRESS_RESULT_NAME = "show_progress";
 
 }
 

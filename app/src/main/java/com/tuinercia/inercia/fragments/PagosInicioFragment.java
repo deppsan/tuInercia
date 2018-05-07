@@ -14,6 +14,8 @@ import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetCurrentMembershipListenerImpl;
+import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
+import com.tuinercia.inercia.interfaces.LoadingViewManager;
 import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
@@ -26,13 +28,15 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
     public static final String FRAGMENT_TAG = "PagosInicioFragment";
     private final static int TITLE = 3;
 
-    LinearLayout view_account_free, view_account_payment;
-    Button btn_mejorar_plan;
+    LinearLayout view_account_free, view_account_payment, view_account_payment_in_progress;
+    Button btn_mejorar_plan, btn_cerrar_sesion;
+    View view;
 
     User user;
 
     InerciaApiGetCurrentMembershipListenerImpl inerciaApiGetCurrentMembershipListener;
     PagosInicioListener pagosInicioListener;
+    LoadingViewManagerImpl loadingViewManager;
 
     @Nullable
     @Override
@@ -41,22 +45,23 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
 
         view_account_free = (LinearLayout) v.findViewById(R.id.view_account_free);
         view_account_payment = (LinearLayout) v.findViewById(R.id.view_account_payment);
+        view_account_payment_in_progress = (LinearLayout) v.findViewById(R.id.view_account_payment_in_progress);
         btn_mejorar_plan = (Button) v.findViewById(R.id.btn_mejorar_plan);
-
+        btn_cerrar_sesion = (Button) v.findViewById(R.id.btn_cerrar_sesion);
+        view = v.findViewById(R.id.loading_view);
         user = UtilsSharedPreference.getInstance(getContext()).getUser();
 
         inerciaApiGetCurrentMembershipListener = new InerciaApiGetCurrentMembershipListenerImpl(this);
+        loadingViewManager = new LoadingViewManagerImpl(view);
 
         if(UtilsSharedPreference.getInstance(getContext()).get_type_account()){
-            view_account_payment.setVisibility(View.VISIBLE);
-            view_account_free.setVisibility(View.GONE);
 
-            InerciaApiClient.getInstance(getContext()).getCurrentMemberShip(user.getEmail(), user.getPassword_digest(), inerciaApiGetCurrentMembershipListener);
+            InerciaApiClient.getInstance(getContext()).getCurrentMemberShip(user.getEmail(), user.getPassword_digest(), inerciaApiGetCurrentMembershipListener,loadingViewManager);
         }
 
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
-
-
+        btn_mejorar_plan.setOnClickListener(this);
+        btn_cerrar_sesion.setOnClickListener(this);
 
         return v;
     }
@@ -75,6 +80,13 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
         this.view_account_payment = view_account_payment;
     }
 
+    public LinearLayout getView_account_payment_in_progress() {
+        return view_account_payment_in_progress;
+    }
+    public void setView_account_payment_in_progress(LinearLayout view_account_payment_in_progress) {
+        this.view_account_payment_in_progress = view_account_payment_in_progress;
+    }
+
     public interface PagosInicioListener{
         void onClickMejorarPlan();
     }
@@ -84,6 +96,9 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
         switch (v.getId()){
             case R.id.btn_mejorar_plan:
                 pagosInicioListener.onClickMejorarPlan();
+                break;
+            case R.id.btn_cerrar_sesion:
+                UtilsSharedPreference.getInstance(getContext()).logOutUser();
                 break;
         }
     }

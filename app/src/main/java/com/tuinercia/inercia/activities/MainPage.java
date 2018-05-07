@@ -38,7 +38,8 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
 public class MainPage extends AppCompatActivity implements ReservacionClasesFragment.ReservacionClasesListener
                                                         , ReservacionGeolocalizacionFragment.ReservacionGeolocalizacionListener
                                                         , NavigationView.OnNavigationItemSelectedListener
-                                                        , PagosInicioFragment.PagosInicioListener{
+                                                        , PagosInicioFragment.PagosInicioListener
+                                                        , PagosFormularioAltaFragment.PagosFormularioAltaFragmentListener {
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
@@ -92,7 +93,9 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
         changeTitle.changeTitleByCurrentFragment(0);
 
         navigationView.setNavigationItemSelectedListener(this);
+        actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.WHITE));
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
 
         addFragment(R.id.frame_content_main,new ReservacionClasesFragment(), ReservacionClasesFragment.FRAGMENT_TAG);
     }
@@ -104,6 +107,18 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
                                 @Nullable String backStackStateName) {
         getSupportFragmentManager()
                 .popBackStack();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerViewId, fragment, fragmentTag)
+                .addToBackStack(backStackStateName)
+                .commit();
+    }
+    public void backReplaceFragment(@IdRes int containerViewId,
+                                @NonNull Fragment fragment,
+                                @NonNull String fragmentTag,
+                                @Nullable String backStackStateName) {
+        /*getSupportFragmentManager()
+                .popBackStack();*/
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(containerViewId, fragment, fragmentTag)
@@ -206,6 +221,12 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     @Override
     public void onClickMejorarPlan() {
         String previousTag = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag();
-        replaceFragment(R.id.frame_content_main, new PagosFormularioAltaFragment(), PagosFormularioAltaFragment.FRAGMENT_TAG, previousTag);
+        backReplaceFragment(R.id.frame_content_main, new PagosFormularioAltaFragment(), PagosFormularioAltaFragment.FRAGMENT_TAG, previousTag);
+    }
+
+    @Override
+    public void OnCreatePaymentSuccess() {
+        String previousTag = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag();
+        replaceFragment(R.id.frame_content_main, new PagosInicioFragment(), PagosInicioFragment.FRAGMENT_TAG, previousTag);
     }
 }

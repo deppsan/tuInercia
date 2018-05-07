@@ -9,6 +9,6 @@ import com.tuinercia.inercia.DTO.MembershipProgress;
 
 public interface InerciaApiGetCurrentMembershipListener {
     void onErrorServer(int statusCode);
-    void onGetCurrentMembershipSuccess(Membership membership, MembershipProgress membershipProgress);
+    void onGetCurrentMembershipSuccess(Membership membership, MembershipProgress membershipProgress, boolean showProgress);
     void onGetCurrentMembershipError(String errorMessage);
 }

@@ -23,7 +23,7 @@ public class InerciaApiCancelBookingListenerAgendaImpl implements InerciaApiCanc
     public void onCancelBookingSuccess(String responseMessage) {
         GeneralDialogFragment.getInstance(responseMessage,"Aceptar",null)
                              .show(agendaActualFragment.getFragmentManager(),null);
-        InerciaApiClient.getInstance(agendaActualFragment.getmContext()).pendingBookin(Integer.toString(agendaActualFragment.getUser().getId()), agendaActualFragment.getInerciaApiPendingBookingListener());
+        InerciaApiClient.getInstance(agendaActualFragment.getmContext()).pendingBookin(Integer.toString(agendaActualFragment.getUser().getId()), agendaActualFragment.getInerciaApiPendingBookingListener(), agendaActualFragment.getLoadingViewManager());
     }
 
     @Override

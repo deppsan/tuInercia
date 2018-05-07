@@ -28,6 +28,8 @@ public class InformacionCVVDialog extends DialogFragment {
             builder.setView(view);
         }
 
+
+
         return builder.show();
     }
 }

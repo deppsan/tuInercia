@@ -3,19 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize">
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/cloud_background"
-        android:scaleType="center"/>
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="2"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
-        android:stretchMode="columnWidth"
-        android:layout_weight="1"
-        android:id="@+id/grid_clases">
-    </GridView>
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/cloud_background"
+            android:scaleType="center"/>
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="2"
+            android:verticalSpacing="1dp"
+            android:horizontalSpacing="1dp"
+            android:stretchMode="columnWidth"
+            android:layout_weight="1"
+            android:id="@+id/grid_clases">
+        </GridView>
+    </RelativeLayout>
+    <include
+        android:id="@+id/loading_view"
+        layout="@layout/view_loading"/>
 </RelativeLayout>

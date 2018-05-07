@@ -1,197 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="5"
     android:background="@drawable/portada"
     android:layout_marginTop="?attr/actionBarSize">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"></LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <Spinner android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:backgroundTint="@color/transBLACK"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:background="@color/WHITE"
-                    android:id="@+id/spinner_planes_pagos"
-                    android:popupBackground="@color/transBLACK"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="1"></LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/WHITE"
-                    android:backgroundTint="@color/WHITE"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:layout_weight="1"
-                    android:inputType="textPersonName"
-                    android:hint="Titular de Tarjeta"
-                    android:textColorHint="@color/GRAY"
-                    android:id="@+id/txt_titular_tarjeta" />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/WHITE"
-                    android:backgroundTint="@color/WHITE"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:layout_weight="1"
-                    android:inputType="number"
-                    android:maxLength="16"
-                    android:hint="Número de Tarjeta"
-                    android:textColorHint="@color/GRAY"
-                    android:id="@+id/txt_numero_tarjeta"
-                    android:lines="1" />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="5">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/WHITE"
-                    android:backgroundTint="@color/WHITE"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:layout_weight="3"
-                    android:inputType="number"
-                    android:maxLength="3"
-                    android:lines="1"
-                    android:hint="CVC"
-                    android:textColorHint="@color/GRAY"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/txt_cvc"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical|left">
-                    <ImageView
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+                    <Spinner android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:id="@+id/spinner_planes_pagos"
+                        style="@style/spinner_style"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/WHITE"
+                        android:backgroundTint="@color/WHITE"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:inputType="textPersonName"
+                        android:hint="Titular de Tarjeta"
+                        android:textColorHint="@color/GRAY"
+                        android:id="@+id/txt_titular_tarjeta" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/WHITE"
+                        android:backgroundTint="@color/WHITE"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:inputType="phone"
+                        android:maxLength="19"
+                        android:hint="Número de Tarjeta"
+                        android:textColorHint="@color/GRAY"
+                        android:id="@+id/txt_numero_tarjeta"
+                        android:lines="1" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/WHITE"
+                        android:backgroundTint="@color/WHITE"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="3"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:lines="1"
+                        android:hint="CVC"
+                        android:textColorHint="@color/GRAY"
+                        android:gravity="center_horizontal"
+                        android:id="@+id/txt_cvc"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_vertical|left">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_help_48"
+                            android:id="@+id/image_help_icon_cvc"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/WHITE"
+                        android:backgroundTint="@color/WHITE"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="3"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:lines="1"
+                        android:hint="MM"
+                        android:textColorHint="@color/GRAY"
+                        android:gravity="center_horizontal"
+                        android:id="@+id/txt_expiracion_mes"/>
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_help_48"
-                        android:id="@+id/image_help_icon_cvc"/>
+                        android:layout_height="match_parent"
+                        android:text="/"
+                        android:textColor="@color/WHITE"
+                        android:gravity="center_vertical"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/WHITE"
+                        android:backgroundTint="@color/WHITE"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="3"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:lines="1"
+                        android:hint="AAAA"
+                        android:textColorHint="@color/GRAY"
+                        android:gravity="center_horizontal"
+                        android:id="@+id/txt_expiracion_año"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_vertical|left">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_help_48"
+                            android:id="@+id/image_vto_help"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:gravity="end">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/button_height"
+                        android:id="@+id/button_alta_plan_pago"
+                        android:text="@string/btn_login_check"
+                        android:background="@drawable/rounded_button_state_reverse"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/WHITE"
-                    android:backgroundTint="@color/WHITE"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:layout_weight="3"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:lines="1"
-                    android:hint="MM"
-                    android:textColorHint="@color/GRAY"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/txt_expiracion_mes"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="/"
-                    android:textColor="@color/WHITE"
-                    android:gravity="center_vertical"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/WHITE"
-                    android:backgroundTint="@color/WHITE"
-                    android:layout_margin="10dp"
-                    android:paddingLeft="10dp"
-                    android:layout_weight="3"
-                    android:inputType="number"
-                    android:maxLength="4"
-                    android:lines="1"
-                    android:hint="AAAA"
-                    android:textColorHint="@color/GRAY"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/txt_expiracion_año"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical|left">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_help_48"
-                        android:id="@+id/image_vto_help"/>
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:gravity="end">
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/button_height"
-                    android:id="@+id/button_alta_plan_pago"
-                    android:text="@string/btn_login_check"
-                    android:background="@drawable/rounded_button_state_reverse"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="1"></LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"></LinearLayout>
-</LinearLayout>
+    <include
+        android:id="@+id/loading_view"
+        layout="@layout/view_loading"/>
+</RelativeLayout>

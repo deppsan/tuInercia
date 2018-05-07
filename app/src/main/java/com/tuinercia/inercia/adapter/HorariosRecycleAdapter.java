@@ -16,6 +16,7 @@ import com.tuinercia.inercia.utils.TypeFaceCustom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,14 +66,14 @@ public class HorariosRecycleAdapter extends RecyclerView.Adapter<HorariosRecycle
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Schedule horario = horarios.get(position);
         Locale loc = new Locale("es","MX");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", loc);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", loc);
         Calendar cal = Calendar.getInstance();
         try {
-            cal.setTime(formatter.parse(horario.getDate()));
+            Date date = formatter.parse(horario.getDate());
+            cal.setTime(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        cal.add(Calendar.MONTH,1);
         formatter = new SimpleDateFormat("E d MMMM",loc);
         holder.text_horarios.setText(formatter.format(cal.getTime()) + " " + horario.getTime());
     }

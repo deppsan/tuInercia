@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.CrearCuentaFragment;
+import com.tuinercia.inercia.fragments.CrearCuentaWizard2Fragment;
 import com.tuinercia.inercia.fragments.dialogs.ErrorServerDialog;
 import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.interfaces.InerciaApiCreateUserListener;
@@ -15,28 +16,28 @@ import com.tuinercia.inercia.interfaces.InerciaApiCreateUserListener;
 
 public class InerciaApiCreateUserListenerImpl implements InerciaApiCreateUserListener {
 
-    CrearCuentaFragment crearCuentaFragment;
+    CrearCuentaWizard2Fragment crearCuentaWizard2Fragment;
 
-    public InerciaApiCreateUserListenerImpl(CrearCuentaFragment crearCuentaFragment) {
-        this.crearCuentaFragment = crearCuentaFragment;
+    public InerciaApiCreateUserListenerImpl(CrearCuentaWizard2Fragment crearCuentaFragment) {
+        this.crearCuentaWizard2Fragment = crearCuentaFragment;
     }
 
     @Override
-    public void onCreateUserSuccefull(User user) {
-        crearCuentaFragment.messageSuccessCreation();
+    public void onCreateUserSuccefull(User user, String userD, String password) {
+        crearCuentaWizard2Fragment.messageSuccessCreation(userD,password);
     }
 
     @Override
     public void onCreateUserError(String errorMessage) {
-        GeneralDialogFragment.getInstance(errorMessage, crearCuentaFragment.getContext().getString(R.string.btn_login_check),null)
-                             .show(crearCuentaFragment.getFragmentManager(),crearCuentaFragment.FRAGMENT_TAG);
+        GeneralDialogFragment.getInstance(errorMessage, crearCuentaWizard2Fragment.getContext().getString(R.string.btn_login_check),null)
+                             .show(crearCuentaWizard2Fragment.getFragmentManager(),crearCuentaWizard2Fragment.FRAGMENT_TAG);
     }
 
     @Override
     public void onErrorServer(int statusCode) {
         DialogFragment dialog = new ErrorServerDialog();
         dialog.setCancelable(false);
-        dialog.show(crearCuentaFragment.getFragmentManager(),crearCuentaFragment.FRAGMENT_TAG);
+        dialog.show(crearCuentaWizard2Fragment.getFragmentManager(),crearCuentaWizard2Fragment.FRAGMENT_TAG);
 
     }
 }

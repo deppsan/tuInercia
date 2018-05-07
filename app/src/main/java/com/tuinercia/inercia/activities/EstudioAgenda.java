@@ -34,8 +34,10 @@ import com.tuinercia.inercia.implementation.HorarioRecycleAdapterListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiCancelBookingListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiCreateBookingListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetScheduleByParlorListenerImpl;
+import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
 import com.tuinercia.inercia.implementation.ReservationRecycleAdapterListenerImpl;
 import com.tuinercia.inercia.interfaces.InerciaApiCreateBookingListener;
+import com.tuinercia.inercia.interfaces.LoadingViewManager;
 import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
@@ -64,6 +66,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     ImageView img_toolbar_studio;
     Button button_estudio_orientame;
     Toolbar toolbar;
+    View view;
 
     Button btn_seleccion = null;
 
@@ -86,6 +89,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     InerciaApiCancelBookingListenerImpl inerciaApiCancelBookingListener;
     ReservationRecycleAdapterListenerImpl reservationRecycleAdapterListener;
     DialgoFragmentCancelFromAgendaListenerImpl dialgoFragmentCancelFromAgendaListener;
+    LoadingViewManagerImpl loadingViewManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         button_estudio_orientame      = (Button) findViewById(R.id.button_estudio_orientame);
         text_estudios_direccion       = (TextView) findViewById(R.id.text_estudio_direccion);
         img_toolbar_studio            = (ImageView) findViewById(R.id.img_toolbar_studio);
+        view                          = findViewById(R.id.loading_view);
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         label_estudio_description.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
@@ -134,7 +139,6 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         rcv_horarios.setItemAnimator(new DefaultItemAnimator());
 
         rcv_horarios.setAdapter(horariosAdapter);
-        /**/
 
         /*Seccion para instanciar y hacer funcionar el recycler view de Reservaciones
         * */
@@ -156,11 +160,11 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         inerciaApiCreateBookingListener = new InerciaApiCreateBookingListenerImpl(this);
         inerciaApiCancelBookingListener = new InerciaApiCancelBookingListenerImpl(this);
         dialgoFragmentCancelFromAgendaListener = new DialgoFragmentCancelFromAgendaListenerImpl(this);
-
+        loadingViewManager = new LoadingViewManagerImpl(view);
         button_estudio_orientame.setOnClickListener(this);
 
 
-        InerciaApiClient.getInstance(this).getScheduleByParlor(Integer.parseInt(discipline), parlor.getId(), user.getId(),inerciaApiGetScheduleByParlorListener);
+        InerciaApiClient.getInstance(this).getScheduleByParlor(Integer.parseInt(discipline), parlor.getId(), user.getId(),inerciaApiGetScheduleByParlorListener, loadingViewManager);
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -182,7 +186,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     }
     @Override
     public void onAceptarConfirmacion(int idSchedule) {
-        InerciaApiClient.getInstance(this).createBooking(Integer.toString(UtilsSharedPreference.getInstance(this).getUser().getId()),Integer.toString(idSchedule),inerciaApiCreateBookingListener);
+        InerciaApiClient.getInstance(this).createBooking(Integer.toString(UtilsSharedPreference.getInstance(this).getUser().getId()),Integer.toString(idSchedule),inerciaApiCreateBookingListener, loadingViewManager);
     }
 
     @Override
@@ -273,5 +277,9 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
 
     public InerciaApiCancelBookingListenerImpl getInerciaApiCancelBookingListener() {
         return inerciaApiCancelBookingListener;
+    }
+
+    public LoadingViewManager getLoadingViewManager(){
+        return loadingViewManager;
     }
 }

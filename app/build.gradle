@@ -38,4 +38,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile 'io.conekta:conektasdk:2.1'
+    compile 'ru.tinkoff.decoro:decoro:1.1.0'
+
+
 }

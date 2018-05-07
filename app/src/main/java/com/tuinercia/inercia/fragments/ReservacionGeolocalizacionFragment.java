@@ -43,6 +43,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.squareup.picasso.Cache;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.tuinercia.inercia.DTO.Disciplines;
@@ -56,6 +58,7 @@ import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 import okhttp3.OkHttpClient;
 
@@ -349,6 +352,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
     public static class MapsAdapterCustom implements GoogleMap.InfoWindowAdapter{
 
+
         @Override
         public View getInfoWindow(Marker marker) {
 
@@ -359,6 +363,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             Display d = wm.getDefaultDisplay();
             Point size = new Point();
             d.getSize(size);
+
             int mHeight = size.y;
             int actionBarHeight = 0;
 
@@ -379,10 +384,25 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             img_info_studio = (ImageView) custom_info_view.findViewById(R.id.img_info_studio);
 
             text_info_description.setText(p.getDescription());
+            text_info_description.setMinimumHeight(actionBarHeight * 2);
             text_info_title.setText(p.getName());
+            text_info_title.setMinimumHeight(actionBarHeight);
 
             Picasso mPicasso = Picasso.with(mContext);
-            mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio);
+            boolean no_first_time = false;
+
+            try{
+                no_first_time = (boolean) marker.getTag();
+            }catch (Exception e){
+
+            }
+
+            if (no_first_time){
+                mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio);
+            }else{
+                marker.setTag(true);
+                mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio, new InfoWindowRefreser(marker));
+            }
 
             button_ver_clase_info.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);
 
@@ -397,4 +417,26 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             return null;
         }
     }
+
+    private static class InfoWindowRefreser implements Callback{
+
+        private Marker markerRefresher;
+
+        public InfoWindowRefreser(Marker markerRefresher) {
+            this.markerRefresher = markerRefresher;
+        }
+
+        @Override
+        public void onSuccess() {
+            markerRefresher.showInfoWindow();
+        }
+
+        @Override
+        public void onError() {
+
+        }
+    }
+
 }
+
+

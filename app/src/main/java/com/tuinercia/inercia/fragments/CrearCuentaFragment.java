@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.InerciaApiCreateUserListenerImpl;
+import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
 import com.tuinercia.inercia.network.InerciaApiClient;
+import com.tuinercia.inercia.utils.ExpValidator;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
+import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
 /**
  * Created by ricar on 20/09/2017.
@@ -29,7 +32,6 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
 
     public static final String FRAGMENT_TAG = "CrearCuentaFragment";
     private CrearCuentaListener listener;
-    private InerciaApiCreateUserListenerImpl inerciaApiCreateUser;
 
     @Nullable
     @Override
@@ -52,7 +54,6 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
         button_crear.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
         button_crear.setOnClickListener(this);
 
-        inerciaApiCreateUser = new InerciaApiCreateUserListenerImpl(this);
 
         return v;
     }
@@ -67,10 +68,9 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
                 String contraseñaConfirmar = text_contraseña_confirmar_crear.getText().toString();
 
                 if(validarConfirmaciones(email, emailConfirmar, contraseña, contraseñaConfirmar)){
-                    InerciaApiClient.getInstance(getContext()).createUser(email,contraseña,inerciaApiCreateUser);
-                }else{
-                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+                    listener.goToNextStep(email,contraseña,FRAGMENT_TAG);
                 }
+
                 break;
         }
     }
@@ -78,27 +78,29 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
     private boolean validarConfirmaciones(String email, String emailConfirm, String contraseña, String contraseñaConfirm){
         boolean validation = true;
 
-        validation = (email.equalsIgnoreCase(emailConfirm)) ? validation : false;
-        validation = (contraseña.equalsIgnoreCase(contraseñaConfirm)) ? validation : false;
+        if (!ExpValidator.getInstance().validateEmail(email)){
+            validation = false;
+            text_email_crear.setError(getString(R.string.label_error_correo_formato_valido));
+        }
+
+        if (!email.equalsIgnoreCase(emailConfirm) && validation){
+            validation = false;
+            text_email_crear.setError(getString(R.string.label_error_email_no_coincide));
+            text_confirmar_email_crear.setError(getString(R.string.label_error_email_no_coincide));
+        }
+
+        if (!contraseña.equalsIgnoreCase(contraseñaConfirm)  && validation ){
+            validation = false;
+            text_contraseña_confirmar_crear.setError(getString(R.string.label_error_password_no_coincide));
+            text_contraseña_crear.setError(getString(R.string.label_error_password_no_coincide));
+        }
 
         return validation;
     }
 
-    public void messageSuccessCreation(){
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("");
-        alertDialog.setMessage(getContext().getString(R.string.dialog_meesage_crear_cuenta));
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                listener.onCrearCuenta(FRAGMENT_TAG);
-            }
-        });
-        alertDialog.show();
-    }
 
     public interface CrearCuentaListener{
-        void onCrearCuenta(String thisFragmentTag);
+        void goToNextStep(String email, String password, String fragmentAnterior);
     }
 
     @Override

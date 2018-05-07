@@ -15,6 +15,7 @@ import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.ReservacionClasesAdapter;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetDiciplinasListenerImpl;
+import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
 import com.tuinercia.inercia.network.InerciaApiClient;
 
 import java.util.ArrayList;
@@ -26,8 +27,11 @@ import java.util.ArrayList;
 public class ReservacionClasesFragment extends Fragment implements AdapterView.OnItemClickListener{
 
     public GridView grid_clases;
+    View view;
     ReservacionClasesListener listener;
     InerciaApiGetDiciplinasListenerImpl inerciaApiGetDiciplinasListener;
+    LoadingViewManagerImpl loadingViewManager;
+
 
     public final static String FRAGMENT_TAG = "ReservacionClasesFragment";
     private final static int TITLE = 0;
@@ -38,9 +42,11 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
         View v = inflater.inflate(R.layout.fragment_reservacion_clases,container,false);
 
         grid_clases = (GridView) v.findViewById(R.id.grid_clases);
+        view =  v.findViewById(R.id.loading_view);
 
         inerciaApiGetDiciplinasListener = new InerciaApiGetDiciplinasListenerImpl(this);
-        InerciaApiClient.getInstance(getContext()).getDiciplinas(inerciaApiGetDiciplinasListener);
+        loadingViewManager = new LoadingViewManagerImpl(view);
+        InerciaApiClient.getInstance(getContext()).getDiciplinas(inerciaApiGetDiciplinasListener, loadingViewManager);
 
         grid_clases.setOnItemClickListener(this);
 
