@@ -1,17 +1,17 @@
 package com.tuinercia.inercia.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.CrearCuentaFragment;
 import com.tuinercia.inercia.fragments.CrearCuentaWizard2Fragment;
@@ -29,6 +29,13 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectNetwork()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -36,7 +43,6 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
 
 
         setContentView(R.layout.activity_login_main);
-
         if(UtilsSharedPreference.getInstance(this).isLoggedIn()){
             goToMainPage();
         }else{
@@ -44,17 +50,18 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
         }
     }
 
-    public void addFragment(@IdRes int containerViewId,
-                               @NonNull Fragment fragment,
-                               @NonNull String fragmentTag) {
+    public void replaceFragment(@IdRes int containerViewId,
+                                @NonNull Fragment fragment,
+                                @NonNull String fragmentTag,
+                                @Nullable String backStackStateName) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(containerViewId, fragment, fragmentTag)
-                .disallowAddToBackStack()
+                .replace(containerViewId, fragment, fragmentTag)
+                .addToBackStack(backStackStateName)
                 .commit();
     }
 
-    public void replaceFragment(@IdRes int containerViewId,
+    public void replacePopFragment(@IdRes int containerViewId,
                                    @NonNull Fragment fragment,
                                    @NonNull String fragmentTag,
                                    @Nullable String backStackStateName) {
@@ -66,16 +73,14 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
                 .addToBackStack(backStackStateName)
                 .commit();
     }
-    public void backReplaceFragment(@IdRes int containerViewId,
-                                         @NonNull Fragment fragment,
-                                         @NonNull String fragmentTag,
-                                         @Nullable String backStackStateName) {
-        /*getSupportFragmentManager()
-                .popBackStack();*/
+
+    public void addFragment(@IdRes int containerViewId,
+                            @NonNull Fragment fragment,
+                            @NonNull String fragmentTag) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(containerViewId, fragment, fragmentTag)
-                .addToBackStack(backStackStateName)
+                .add(containerViewId, fragment, fragmentTag)
+                .disallowAddToBackStack()
                 .commit();
     }
 
@@ -110,7 +115,7 @@ public class LoginMain extends AppCompatActivity implements LoginOptionFragment.
 
         crearCuentaWizard2Fragment.setArguments(args);
 
-        backReplaceFragment(R.id.frame_content, crearCuentaWizard2Fragment,crearCuentaWizard2Fragment.FRAGMENT_TAG,FragmentAnterior);
+        replaceFragment(R.id.frame_content, crearCuentaWizard2Fragment,crearCuentaWizard2Fragment.FRAGMENT_TAG,FragmentAnterior);
     }
 
 

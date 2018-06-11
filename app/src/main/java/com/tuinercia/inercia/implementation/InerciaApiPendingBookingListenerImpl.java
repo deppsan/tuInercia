@@ -17,7 +17,12 @@ import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.interfaces.InerciaApiPendingBookingListener;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by ricar on 06/03/2018.
@@ -53,9 +58,20 @@ public class InerciaApiPendingBookingListenerImpl implements InerciaApiPendingBo
             @Override
             public void onEntrada(Object objects, HolderView mHolder, int position) {
                 ReservationTrue reservation = (ReservationTrue) objects;
+
+                Locale loc = new Locale("es","MX");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", loc);
+                Calendar cal = Calendar.getInstance();
+                try {
+                    Date date = formatter.parse(reservation.getFecha());
+                    cal.setTime(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                formatter = new SimpleDateFormat("E d MMMM",loc);
                 mHolder.clase.setText(reservation.getClase());
                 mHolder.clase.setTypeface(TypeFaceCustom.getInstance( agendaActualFragment.getmContext()).UBUNTU_TYPE_FACE);
-                mHolder.fecha.setText(reservation.getFecha() + " ");
+                mHolder.fecha.setText(formatter.format(cal.getTime()) + " ");
                 mHolder.fecha.setTypeface(TypeFaceCustom.getInstance( agendaActualFragment.getmContext()).UBUNTU_TYPE_FACE);
                 mHolder.hora.setText(reservation.getHora());
                 mHolder.hora.setTypeface(TypeFaceCustom.getInstance( agendaActualFragment.getmContext()).UBUNTU_TYPE_FACE);
@@ -71,7 +87,7 @@ public class InerciaApiPendingBookingListenerImpl implements InerciaApiPendingBo
                     if(!reservation.getChecking()){
                         mHolder.button.setText(R.string.btn_check_in);
                     }else{
-                        mHolder.button.setText(reservation.getConfirmacion());
+                        mHolder.button.setText("Clave : " + reservation.getConfirmacion());
                         mHolder.button.setEnabled(false);
                         mHolder.button.setTextColor(ContextCompat.getColor(agendaActualFragment.getmContext(),R.color.colorPrimary));
                     }

@@ -12,7 +12,7 @@
     <dimen name="profile_height">75dp</dimen>
 
 
-    <dimen name="dimen_grid">50dp</dimen>
+    <dimen name="dimen_grid">45dp</dimen>
 
     <!--Dimensiones de Botones-->
     <dimen name="button_height">35dp</dimen>

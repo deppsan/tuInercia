@@ -25,7 +25,7 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
  * Created by ricar on 20/09/2017.
  */
 
-public class CrearCuentaFragment extends Fragment implements View.OnClickListener{
+public class CrearCuentaFragment extends Fragment implements View.OnClickListener, View.OnFocusChangeListener{
 
     EditText text_email_crear,text_confirmar_email_crear,text_contraseña_crear,text_contraseña_confirmar_crear;
     Button button_crear;
@@ -54,6 +54,9 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
         button_crear.setTypeface(TypeFaceCustom.getInstance(getContext()).UBUNTU_TYPE_FACE);
         button_crear.setOnClickListener(this);
 
+        text_email_crear.setOnFocusChangeListener(this);
+        text_confirmar_email_crear.setOnFocusChangeListener(this);
+        text_contraseña_confirmar_crear.setOnFocusChangeListener(this);
 
         return v;
     }
@@ -96,6 +99,32 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
         }
 
         return validation;
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if (!b){
+            switch (view.getId()){
+                case R.id.text_email_crear:
+                    String email = text_email_crear.getText().toString();
+                    if (!ExpValidator.getInstance().validateEmail(email) && email.trim().length() > 0){
+                        text_email_crear.setError(getString(R.string.label_error_correo_formato_valido));
+                    }
+                    break;
+                case R.id.text_confirmar_email_crear:
+                    if (!text_email_crear.getText().toString().equalsIgnoreCase(text_confirmar_email_crear.getText().toString())){
+//                        text_email_crear.setError(getString(R.string.label_error_email_no_coincide));
+                        text_confirmar_email_crear.setError(getString(R.string.label_error_email_no_coincide));
+                    }
+                    break;
+                case R.id.text_contraseña_confirmar_crear:
+                    if (!text_contraseña_crear.getText().toString().equalsIgnoreCase(text_contraseña_confirmar_crear.getText().toString())){
+                        text_contraseña_confirmar_crear.setError(getString(R.string.label_error_password_no_coincide));
+                        text_contraseña_crear.setError(getString(R.string.label_error_password_no_coincide));
+                    }
+                    break;
+            }
+        }
     }
 
 

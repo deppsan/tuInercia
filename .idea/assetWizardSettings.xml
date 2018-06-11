@@ -19,8 +19,39 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\ricar\Desktop\CV_vto\expand_arrow_up.png" />
-                                      <entry key="outputName" value="arrow_up_collapse" />
+                                      <entry key="imageAsset" value="C:\Users\ricar\AndroidStudioProjects\Inercia\app\src\main\res\drawable-xxhdpi\tag_map.png" />
+                                      <entry key="outputName" value="tag_map" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="4511d3" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                            <entry key="launcher">
+                              <value>
+                                <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="foregroundImage">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="scalingPercent" value="96" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
+                                      <entry key="foregroundImage" value="C:\Users\ricar\AndroidStudioProjects\Inercia\app\src\main\res\drawable-xxhdpi\icon_button_50.png" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
+                                      <entry key="outputName" value="inercia_launcher_foreground" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -39,6 +70,11 @@
                 </map>
               </option>
             </PersistentState>
+          </value>
+        </entry>
+        <entry key="vectorWizard">
+          <value>
+            <PersistentState />
           </value>
         </entry>
       </map>

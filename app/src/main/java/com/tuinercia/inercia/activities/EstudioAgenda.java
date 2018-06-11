@@ -126,7 +126,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         Picasso.with(this).load(parlor.getPic1_url()).into(img_toolbar_studio);
 
         inerciaApiGetScheduleByParlorListener = new InerciaApiGetScheduleByParlorListenerImpl(this);
-        EstudioSeleccionSemanaAdapter adapter = new EstudioSeleccionSemanaAdapter(this, setCurrentDayofTheWeek().toArray(new String[0]));
+        EstudioSeleccionSemanaAdapter adapter = new EstudioSeleccionSemanaAdapter(this, setCurrentDayofTheWeek().toArray(new String[0]), getResources().getDimensionPixelOffset(R.dimen.dimen_grid));
 
         /*Seccion para instanciar y hacer funcionar el recycler view de Horarios
         * */

@@ -106,19 +106,18 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
                                 @NonNull String fragmentTag,
                                 @Nullable String backStackStateName) {
         getSupportFragmentManager()
-                .popBackStack();
-        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(containerViewId, fragment, fragmentTag)
                 .addToBackStack(backStackStateName)
                 .commit();
     }
-    public void backReplaceFragment(@IdRes int containerViewId,
-                                @NonNull Fragment fragment,
-                                @NonNull String fragmentTag,
-                                @Nullable String backStackStateName) {
-        /*getSupportFragmentManager()
-                .popBackStack();*/
+
+    public void replacePopFragment(@IdRes int containerViewId,
+                                   @NonNull Fragment fragment,
+                                   @NonNull String fragmentTag,
+                                   @Nullable String backStackStateName) {
+        getSupportFragmentManager()
+                .popBackStack();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(containerViewId, fragment, fragmentTag)
@@ -134,6 +133,11 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
                 .add(containerViewId, fragment, fragmentTag)
                 .disallowAddToBackStack()
                 .commit();
+    }
+    private void emtyBackStack(){
+        while (getSupportFragmentManager().getBackStackEntryCount() > 0){
+            getSupportFragmentManager().popBackStackImmediate();
+        }
     }
 
     @Override
@@ -175,6 +179,7 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment    = null;
+        boolean mainPageBack = false;
         String previousTAG = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag()
                            , newTag = "";
 
@@ -182,6 +187,7 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
             case R.id.nav_home:
                 fragment = new ReservacionClasesFragment();
                 newTag = ReservacionClasesFragment.FRAGMENT_TAG;
+                mainPageBack = true;
                 break;
             case R.id.nav_pagos:
                 fragment = new PagosInicioFragment();
@@ -191,13 +197,16 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
                 fragment = new AgendaFragment();
                 newTag = AgendaFragment.FRAGMENT_TAG;
                 break;
-            /*case R.id.nav_salir:
-
-                break;*/
         }
 
         if (!newTag.equals(previousTAG)){
-            replaceFragment(R.id.frame_content_main,fragment,newTag,previousTAG);
+//            if (mainPageBack){
+//                emtyBackStack();
+//                addFragment(R.id.frame_content_main,fragment,newTag);
+//            }else{
+                replacePopFragment(R.id.frame_content_main,fragment,newTag,previousTAG);
+//            }
+
         }
         drawerLayout.closeDrawers();
 
@@ -221,12 +230,12 @@ public class MainPage extends AppCompatActivity implements ReservacionClasesFrag
     @Override
     public void onClickMejorarPlan() {
         String previousTag = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag();
-        backReplaceFragment(R.id.frame_content_main, new PagosFormularioAltaFragment(), PagosFormularioAltaFragment.FRAGMENT_TAG, previousTag);
+        replaceFragment(R.id.frame_content_main, PagosFormularioAltaFragment.getInstance() , PagosFormularioAltaFragment.FRAGMENT_TAG,previousTag);
     }
 
     @Override
     public void OnCreatePaymentSuccess() {
-        String previousTag = getSupportFragmentManager().findFragmentById(R.id.frame_content_main).getTag();
-        replaceFragment(R.id.frame_content_main, new PagosInicioFragment(), PagosInicioFragment.FRAGMENT_TAG, previousTag);
+        emtyBackStack();
+        addFragment(R.id.frame_content_main, new PagosInicioFragment(), PagosInicioFragment.FRAGMENT_TAG);
     }
 }

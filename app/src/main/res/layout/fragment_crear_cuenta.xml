@@ -30,7 +30,7 @@
                     android:inputType="textEmailAddress"
                     android:paddingLeft="10dp"
                     android:textColor="@color/WHITE"
-                    android:textColorHint="@color/GRAY" />
+                    android:textColorHint="@color/WHITE" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -52,7 +52,7 @@
                     android:layout_weight="1"
                     android:inputType="textEmailAddress"
                     android:hint="@string/textview_confirmar_email"
-                    android:textColorHint="@color/GRAY"
+                    android:textColorHint="@color/WHITE"
                     android:id="@+id/text_confirmar_email_crear"/>
             </LinearLayout>
         </LinearLayout>
@@ -75,7 +75,7 @@
                     android:layout_weight="1"
                     android:inputType="textPassword"
                     android:hint="@string/textview_contraseña"
-                    android:textColorHint="@color/GRAY"
+                    android:textColorHint="@color/WHITE"
                     android:id="@+id/text_contraseña_crear"/>
             </LinearLayout>
         </LinearLayout>
@@ -98,7 +98,7 @@
                     android:layout_weight="1"
                     android:inputType="textPassword"
                     android:hint="@string/textview_confirmar_contraseña"
-                    android:textColorHint="@color/GRAY"
+                    android:textColorHint="@color/WHITE"
                     android:id="@+id/text_contraseña_confirmar_crear"/>
             </LinearLayout>
         </LinearLayout>

@@ -46,16 +46,18 @@ public class AgendaActualFragment extends Fragment {
     InerciaApiCheckInBookingListenerAgendaImpl inerciaApiCheckInBookingListenerAgenda;
     LoadingViewManagerImpl loadingViewManager;
 
+    private static AgendaActualFragment instance;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_clases_agenda, container, false);
+        mContext = getActivity();
 
         list_agenda = (ListView) v.findViewById(R.id.list_general);
         view = v.findViewById(R.id.loading_view);
 
         user = UtilsSharedPreference.getInstance(getActivity()).getUser();
-        mContext = getContext();
 
         inerciaApiPendingBookingListener = new InerciaApiPendingBookingListenerImpl(this);
         inerciaApiCancelBookingListenerAgenda = new InerciaApiCancelBookingListenerAgendaImpl(this);
@@ -66,6 +68,15 @@ public class AgendaActualFragment extends Fragment {
         InerciaApiClient.getInstance(getActivity()).pendingBookin(Integer.toString(user.getId()), inerciaApiPendingBookingListener, loadingViewManager);
 
         return v;
+    }
+
+    public AgendaActualFragment(){}
+
+    public static AgendaActualFragment getInstance(){
+        if (instance == null){
+            instance = new AgendaActualFragment();
+        }
+        return instance;
     }
 
     public ListView getList_agenda() {

@@ -33,7 +33,6 @@ public class InerciaApiGetDiciplinasListenerImpl implements InerciaApiGetDicipli
     @Override
     public void chargeDiciplinas(Disciplines[] disciplines) {
         ArrayList<Disciplines> data = new ArrayList<>();
-        //data.add(new Disciplines("0",reservacionClasesFragment.getContext().getString(R.string.title_all),Integer.toString(R.drawable.exercise),"","",""));
         for (Disciplines d : disciplines){
             data.add(d);
         }

@@ -398,10 +398,10 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             }
 
             if (no_first_time){
-                mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio);
+                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio);
             }else{
                 marker.setTag(true);
-                mPicasso.load(p.getPic1_url()).resize(250,500).centerCrop().into(img_info_studio, new InfoWindowRefreser(marker));
+                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio, new InfoWindowRefreser(marker));
             }
 
             button_ver_clase_info.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);

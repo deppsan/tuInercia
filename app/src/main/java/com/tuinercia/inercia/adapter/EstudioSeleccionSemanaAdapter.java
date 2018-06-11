@@ -18,10 +18,12 @@ import com.tuinercia.inercia.utils.TypeFaceCustom;
 public class EstudioSeleccionSemanaAdapter extends BaseAdapter {
     Context mContext;
     String[] array_list;
+    int p;
 
-    public EstudioSeleccionSemanaAdapter(Context mContext,String[] array_list) {
+    public EstudioSeleccionSemanaAdapter(Context mContext,String[] array_list, int p) {
         this.mContext = mContext;
         this.array_list = array_list;
+        this.p = p;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class EstudioSeleccionSemanaAdapter extends BaseAdapter {
         if (convertView == null){
             textView = new TextView(mContext);
             textView.setGravity(Gravity.CENTER);
-            textView.setHeight(130);
+            textView.setHeight(p);
             textView.setTextColor(ContextCompat.getColor(mContext,R.color.transWHITE));
             textView.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);
         }else{

@@ -4,6 +4,7 @@ package com.tuinercia.inercia.network.conection;
 import android.content.Context;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -62,6 +63,7 @@ public class conexionHTTP{
                 loadingViewManager.hideLoadingView();
             }
         });
+        jsonObjectRequest.setRetryPolicy( new DefaultRetryPolicy(0,-1,0));
         queue.add(jsonObjectRequest);
     }
 
@@ -83,6 +85,7 @@ public class conexionHTTP{
                 }
             }
         });
+        jsonObjectRequest.setRetryPolicy( new DefaultRetryPolicy(0,-1,0));
         queue.add(jsonObjectRequest);
     }
 

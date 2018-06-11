@@ -1,6 +1,7 @@
 package com.tuinercia.inercia.fragments;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -28,6 +30,10 @@ import com.tuinercia.inercia.implementation.InerciaApiCreateUserListenerImpl;
 import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
 import com.tuinercia.inercia.network.InerciaApiClient;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String FRAGMENT_TAG = "CrearCuentaWizard2Fragment";
@@ -37,7 +43,6 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
     final static String URL_TERMINOS_CONDICIONES = "https://inercia-stg.herokuapp.com/terminos_miembros";
 
 
-    Spinner dayBirth, monthBirth;
     EditText textview_nombre, txt_year_birth;
     Switch swt_terminos_condiciones;
     TextView text_terminos_condiciones;
@@ -52,17 +57,17 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
     private InerciaApiCreateUserListenerImpl inerciaApiCreateUser;
     LoadingViewManagerImpl loadingViewManager;
 
-
+    private static CrearCuentaWizard2Fragment instance;
+    Calendar calendar;
+    DatePickerDialog.OnDateSetListener date;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crear_cuenta_paso_2,container,false);
-        String[] dias, meses;
+        calendar = Calendar.getInstance();
 
         view = v.findViewById(R.id.loading_view);
-        dayBirth        = (Spinner) v.findViewById(R.id.spn_day_bith);
-        monthBirth      = (Spinner) v.findViewById(R.id.spn_month_birth);
         textview_nombre = (EditText) v.findViewById(R.id.textview_nombre);
         txt_year_birth  = (EditText) v.findViewById(R.id.txt_year_birth);
         swt_terminos_condiciones = (Switch) v.findViewById(R.id.swt_terminos_condiciones);
@@ -72,30 +77,51 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
 
         password = getArguments().getString(PASSWORD_FRAGMENT_PARAM);
         email = getArguments().getString(EMAIL_FRAGMENT_PARAM);
+        txt_year_birth.setKeyListener(null);
 
         inerciaApiCreateUser = new InerciaApiCreateUserListenerImpl(this);
         loadingViewManager = new LoadingViewManagerImpl(view);
 
 
-        dias = getActivity().getResources().getStringArray(R.array.array_day);
-        meses = getActivity().getResources().getStringArray(R.array.array_month);
-
-        ArrayAdapter<String> adapterDias = new ArrayAdapter<>(getContext(), R.layout.object_spinner_planes, dias);
-        ArrayAdapter<String> adapterMeses = new ArrayAdapter<>(getContext(), R.layout.object_spinner_planes, meses);
-
-        dayBirth.setAdapter(adapterDias);
-        monthBirth.setAdapter(adapterMeses);
-
         text_terminos_condiciones.setOnClickListener(this);
         button_crear.setOnClickListener(this);
         swt_terminos_condiciones.setOnCheckedChangeListener(this);
+        txt_year_birth.setOnClickListener(this);
+
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                calendar.set(Calendar.YEAR, i);
+                calendar.set(Calendar.MONTH,i1);
+                calendar.set(Calendar.DAY_OF_MONTH,i2);
+                updateLabel();
+            }
+        };
 
         return v;
+    }
+
+    private void updateLabel() {
+        String myFormat = "yyyy/MM/dd"; //In which you need put here
+
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        txt_year_birth.setText(sdf.format(calendar.getTime()));
+    }
+
+    public static CrearCuentaWizard2Fragment getInstance(){
+        if (instance == null){
+            instance = new CrearCuentaWizard2Fragment();
+        }
+        return instance;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.txt_year_birth:
+                new DatePickerDialog(getContext(), AlertDialog.THEME_HOLO_LIGHT, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                break;
             case R.id.text_terminos_condiciones:
                 Dialog dialog = new Dialog(getActivity());
 
@@ -117,9 +143,8 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
                 name = textview_nombre.getText().toString();
                 year = txt_year_birth.getText().toString();
 
-
                 if (validateForm(name,year)){
-                    birthday = txt_year_birth.getText().toString() + "/" + monthBirth.getSelectedItem().toString() + "/" + dayBirth.getSelectedItem().toString();
+                    birthday = txt_year_birth.getText().toString();
 
                     if (optSex == 1){
                         sex = "F";
@@ -141,12 +166,9 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
             validation = false;
         }
 
-        if ( year.length() != 4){
+        if ( year.trim().equalsIgnoreCase(EMPTY_STRING)){
             validation = false;
             txt_year_birth.setError(getActivity().getString(R.string.label_campo_obligatorio));
-            if (year.trim().equalsIgnoreCase(EMPTY_STRING)){
-                txt_year_birth.setError(getActivity().getString(R.string.label_campo_obligatorio));
-            }
         }
 
         if (!terms_validation){

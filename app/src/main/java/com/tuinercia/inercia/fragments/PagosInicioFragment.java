@@ -26,6 +26,7 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
 public class PagosInicioFragment extends Fragment implements View.OnClickListener{
 
     public static final String FRAGMENT_TAG = "PagosInicioFragment";
+    public static final String PARAMS_IN_PROGRESS = "inProgress";
     private final static int TITLE = 3;
 
     LinearLayout view_account_free, view_account_payment, view_account_payment_in_progress;
@@ -37,6 +38,9 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
     InerciaApiGetCurrentMembershipListenerImpl inerciaApiGetCurrentMembershipListener;
     PagosInicioListener pagosInicioListener;
     LoadingViewManagerImpl loadingViewManager;
+
+//    boolean inProgress;
+//    private static PagosInicioFragment instance;
 
     @Nullable
     @Override
@@ -51,13 +55,19 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
         view = v.findViewById(R.id.loading_view);
         user = UtilsSharedPreference.getInstance(getContext()).getUser();
 
+//        inProgress = getArguments().getBoolean(PARAMS_IN_PROGRESS, false);
+
         inerciaApiGetCurrentMembershipListener = new InerciaApiGetCurrentMembershipListenerImpl(this);
         loadingViewManager = new LoadingViewManagerImpl(view);
 
-        if(UtilsSharedPreference.getInstance(getContext()).get_type_account()){
 
+
+//        if(UtilsSharedPreference.getInstance(getContext()).get_type_account()/* && !inProgress*/){
             InerciaApiClient.getInstance(getContext()).getCurrentMemberShip(user.getEmail(), user.getPassword_digest(), inerciaApiGetCurrentMembershipListener,loadingViewManager);
-        }
+      /*  }else if(inProgr0ess){
+            view_account_free.setVisibility(View.GONE);
+            view_account_payment_in_progress.setVisibility(View.VISIBLE);
+        }*/
 
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
         btn_mejorar_plan.setOnClickListener(this);
@@ -65,6 +75,17 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
 
         return v;
     }
+
+    /*public static PagosInicioFragment newInstance(boolean inProgress){
+
+        instance = new PagosInicioFragment();
+        Bundle args = new Bundle();
+
+        args.putBoolean(PARAMS_IN_PROGRESS, inProgress);
+        instance.setArguments(args);
+
+        return instance;
+    }*/
 
     public LinearLayout getView_account_free() {
         return view_account_free;

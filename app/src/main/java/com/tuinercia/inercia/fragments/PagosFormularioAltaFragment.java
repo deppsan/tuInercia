@@ -66,6 +66,8 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
     private static final String ID_RESULT_NAME_CONEKTA = "id";
     private static final String MESSAGE_TO_PURCHASER = "message_to_purchaser";
 
+    private static PagosFormularioAltaFragment instance;
+
     Spinner spinner;
     ImageView info_cvc, info_caducidad;
     Activity activity;
@@ -119,6 +121,13 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
         watcher.installOn(txt_numero_tarjeta);
 
         return v;
+    }
+
+    public static PagosFormularioAltaFragment getInstance(){
+        if (instance == null){
+            instance = new PagosFormularioAltaFragment();
+        }
+        return instance;
     }
 
     @Override
@@ -248,7 +257,7 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
     }
 
     public interface PagosFormularioAltaFragmentListener{
-        void OnCreatePaymentSuccess();
+            void OnCreatePaymentSuccess();
     }
 
     @Override

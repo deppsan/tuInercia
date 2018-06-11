@@ -67,7 +67,7 @@ public abstract class ReservacionClasesAdapter extends BaseAdapter {
 
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(_layout,null);
-                convertView.setMinimumHeight(((mHeight/4))-(actionBarHeight/3));
+                convertView.setMinimumHeight(((mHeight/3))-(actionBarHeight/2));
 
                 mHolder = new ViewHolder();
                 onEntradaSet(convertView,mHolder);

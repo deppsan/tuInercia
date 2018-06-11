@@ -14,6 +14,8 @@ import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.interfaces.InerciaApiGetCurrentMembershipListener;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by ricar on 28/03/2018.
  */
@@ -42,6 +44,8 @@ public class InerciaApiGetCurrentMembershipListenerImpl implements InerciaApiGet
             TextView text_costo_plan = (TextView) view.findViewById(R.id.text_costo_plan);
             TextView text_clases_restantes = (TextView) view.findViewById(R.id.text_clases_restantes);
             TextView text_plan_caducidad = (TextView) view.findViewById(R.id.text_plan_caducidad);
+            TextView text_clases_restantes_head = (TextView) view.findViewById(R.id.text_clases_restantes_head);
+            TextView text_clases_totales_head = (TextView) view.findViewById(R.id.text_clases_totales_head);
 
             text_nombre_plan.setText(membership.getName());
             text_nombre_plan.setTypeface(TypeFaceCustom.getInstance(pagosInicioFragment.getContext()).UBUNTU_TYPE_FACE);
@@ -51,6 +55,10 @@ public class InerciaApiGetCurrentMembershipListenerImpl implements InerciaApiGet
             text_costo_plan.setTypeface(TypeFaceCustom.getInstance(pagosInicioFragment.getContext()).UBUNTU_TYPE_FACE);
             text_plan_caducidad.setText(" " + membershipProgress.getPeriod_ends());
             text_plan_caducidad.setTypeface(TypeFaceCustom.getInstance(pagosInicioFragment.getContext()).UBUNTU_TYPE_FACE);
+            text_clases_restantes_head.setText(Integer.toString(membershipProgress.getPeriod_current()));
+            text_clases_totales_head.setTypeface(TypeFaceCustom.getInstance(pagosInicioFragment.getContext()).UBUNTU_TYPE_FACE);
+            text_clases_totales_head.setText(Integer.toString(membershipProgress.getPeriod_total()));
+            text_clases_restantes_head.setTypeface(TypeFaceCustom.getInstance(pagosInicioFragment.getContext()).UBUNTU_TYPE_FACE);
 
             pagosInicioFragment.getView_account_free().setVisibility(View.GONE);
             view.setVisibility(View.VISIBLE);

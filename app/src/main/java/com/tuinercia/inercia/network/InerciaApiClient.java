@@ -73,12 +73,13 @@ public class InerciaApiClient {
                     public void onSuccess(JSONObject response) {
                         try{
                             if (response.getBoolean(VALIDATION_RESULT_NAME)){
+                                MembershipProgress membershipProgress = null;
+                                boolean show_progress = false;
                                 Membership membership = gson.fromJson(response.getString(PLAN_RESULT_NAME),Membership.class);
-                                MembershipProgress membershipProgress = gson.fromJson(response.getString(PROGRESS_RESULT_NAME), MembershipProgress.class);
-                                boolean show_progress = response.getBoolean(SHOW_PROGRESS_RESULT_NAME);
-
-                                UtilsSharedPreference.getInstance(mContext).set_type_account(response.getBoolean(VALIDATION_RESULT_NAME));
-
+                                if(response.has(PROGRESS_RESULT_NAME)){
+                                    membershipProgress = gson.fromJson(response.getString(PROGRESS_RESULT_NAME), MembershipProgress.class);
+                                    show_progress = response.getBoolean(SHOW_PROGRESS_RESULT_NAME);
+                                }
                                 listener.onGetCurrentMembershipSuccess(membership, membershipProgress, show_progress);
 
                             }else{
@@ -511,7 +512,9 @@ public class InerciaApiClient {
                     public void onSuccess(JSONObject response) {
                         try{
                             if (response.getBoolean(VALIDATION_RESULT_NAME)){
+                                UtilsSharedPreference.getInstance(mContext).set_type_account(response.getBoolean(VALIDATION_RESULT_NAME));
                                 listener.onCreatePaymentSuccess(response.getString(RESPONSE_RESULT_NAME));
+
                             }else{
                                 listener.onCreatePaymentError(response.getString(ERROR_MESSAGE_NAME));
                             }
