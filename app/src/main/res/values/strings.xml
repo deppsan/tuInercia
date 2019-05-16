@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Inercia</string>
+    <string name="app_name">tuinercia</string>
+    <string name="facebook_app_id">1503400229776009</string>
+    <string name="fb_login_protocol_scheme">fb1503400229776009</string>
 
     <!--Buttons-->
     <string name="btn_login">Ejercitame</string>
@@ -15,6 +17,7 @@
     <string name="btn_crear">Crear</string>
 
     <!--Labels-->
+    <string name="toast_geoocalizacion">Dale click al pin para +info</string>
     <string name="textview_email">E-MAIL</string>
     <string name="textview_contraseña">CONTRASEÑA</string>
     <string name="textview_confirmar_email">CONFIRMAR E-MAIL</string>
@@ -145,5 +148,7 @@
     <string name="dialog_title_create_payment">Danos unos minutos... estamos procesando el pago con tu banco</string>
     <string name="dialog_message_create_payment">¡Pronto podrás descubrir nuevas clases y agendar las que más te gusten!</string>
     <string name="dialog_end_message_create_payment">Sabrás que tu pago fue autorizado en esta sección de tu cuenta</string>
+    <string name="dialog_title_sos">¿Dudas? \nEscribenos aquí.</string>
+    <string name="dialog_title_sos_2">Escribenos aquí.</string>
 
 </resources>

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.DTO.History;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
@@ -53,6 +54,9 @@ public class AgendaHistoryFragment extends Fragment {
         inerciaApiGetBookingHistoryListener = new InerciaApiGetBookingHistoryListenerImpl(this);
 
         InerciaApiClient.getInstance(getActivity()).getBookingHistory(Integer.toString(user.getId()), inerciaApiGetBookingHistoryListener);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

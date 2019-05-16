@@ -19,10 +19,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\ricar\AndroidStudioProjects\Inercia\app\src\main\res\drawable-xxhdpi\tag_map.png" />
-                                      <entry key="outputName" value="tag_map" />
-                                      <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="4511d3" />
+                                      <entry key="imageAsset" value="C:\Users\ricar\Desktop\icons8-whatsapp-512.png" />
+                                      <entry key="outputName" value="sos_whatsapp_icon" />
+                                      <entry key="themeColor" value="d3d1d1" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -38,7 +37,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="96" />
+                                                <entry key="scalingPercent" value="67" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -48,10 +47,11 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="C:\Users\ricar\AndroidStudioProjects\Inercia\app\src\main\res\drawable-xxhdpi\icon_button_50.png" />
-                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
-                                      <entry key="outputName" value="inercia_launcher_foreground" />
+                                      <entry key="backgroundLayerName" value="ic_launcher_background_4" />
+                                      <entry key="foregroundAssetType" value="CLIP_ART" />
+                                      <entry key="foregroundImage" value="C:\Users\ricar\Desktop\tuinercia_1024_3.jpg" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_foreground_4" />
+                                      <entry key="outputName" value="inercia_launcher_foreground_4" />
                                     </map>
                                   </option>
                                 </PersistentState>

@@ -21,9 +21,13 @@ public class Schedule {
     int instructor_id;
     @SerializedName("inst_name")
     String inst_name;
+    @SerializedName("name")
+    String name;
     boolean isSelected;
+    @SerializedName("description")
+    String description;
 
-    public Schedule(int id, String date, String time, String datetime, int training_id, int instructor_id, String inst_name) {
+    public Schedule(int id, String date, String time, String datetime, int training_id, int instructor_id, String inst_name, String name,String description) {
         this.id = id;
         this.date = date;
         this.time = time;
@@ -31,6 +35,16 @@ public class Schedule {
         this.training_id = training_id;
         this.instructor_id = instructor_id;
         this.inst_name = inst_name;
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getId() {
@@ -95,5 +109,13 @@ public class Schedule {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -70,7 +70,7 @@ public class InerciaApiGetCurrentMembershipListenerImpl implements InerciaApiGet
 
     @Override
     public void onGetCurrentMembershipError(String errorMessage) {
-        GeneralDialogFragment.getInstance(errorMessage,"Aceptar",null)
-                .show(pagosInicioFragment.getFragmentManager(),null);
+        /*GeneralDialogFragment.getInstance(errorMessage,"Aceptar",null)
+                .show(pagosInicioFragment.getFragmentManager(),null);*/
     }
 }

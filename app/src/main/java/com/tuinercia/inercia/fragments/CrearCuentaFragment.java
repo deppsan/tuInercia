@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.InerciaApiCreateUserListenerImpl;
 import com.tuinercia.inercia.implementation.LoadingViewManagerImpl;
@@ -57,6 +58,9 @@ public class CrearCuentaFragment extends Fragment implements View.OnClickListene
         text_email_crear.setOnFocusChangeListener(this);
         text_confirmar_email_crear.setOnFocusChangeListener(this);
         text_contraseña_confirmar_crear.setOnFocusChangeListener(this);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

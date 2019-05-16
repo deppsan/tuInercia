@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.DTO.History;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.HistoryRecycleAdapter;
@@ -50,6 +51,9 @@ public class AgendaHistoryListFragment extends Fragment {
         rcy_mis_clases_history.setLayoutManager(layoutManager);
         rcy_mis_clases_history.setItemAnimator(new DefaultItemAnimator());
         rcy_mis_clases_history.setAdapter(historyRecycleAdapter);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

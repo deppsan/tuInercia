@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tuinercia.inercia.DTO.ConektaErrorObject;
 import com.tuinercia.inercia.DTO.Membership;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
@@ -56,15 +59,17 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
     private static final int LENGHT_VTO_YEAR = 4;
     private static final String ERROR_CAMPO_NECESARIO = "Campo requerido";
     private static final String ERROR_NUMERO_TARJETA = "El numero de tarjeta consta de 16 numeros";
+    private static final String ERROR_EXPIRACION_TARJETA = "El numero de expiración esta incorrecto.";
 
     private static final String REGEX_SPACE = "\\s+";
 
     private static final String ERROR_RESULT_NAME_CONEKTA = "error";
-    private static final String CONEKTA_PUBLIC_KEY = "key_DsUNHQxSdYi81c6oxByvAbg";
+//    private static final String CONEKTA_PUBLIC_KEY = "key_DsUNHQxSdYi81c6oxByvAbg";   //DEV
+    private static final String CONEKTA_PUBLIC_KEY = "key_dKosJowo7QtMserrk8UxZnQ";     //PROD
     private static final String CONEKTA_VERSION = "2.0.0";
     private static final String OBJECT_RESULT_NAME_CONEKTA = "object";
     private static final String ID_RESULT_NAME_CONEKTA = "id";
-    private static final String MESSAGE_TO_PURCHASER = "message_to_purchaser";
+    private static final String ERROR_EXP_MONTH = "expMonth";
 
     private static PagosFormularioAltaFragment instance;
 
@@ -120,6 +125,10 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
         FormatWatcher watcher = new MaskFormatWatcher(mask);
         watcher.installOn(txt_numero_tarjeta);
 
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
+
         return v;
     }
 
@@ -158,26 +167,38 @@ public class PagosFormularioAltaFragment extends Fragment implements View.OnClic
                     vto_year = txt_expiracion_año.getText().toString();
                     vto_month = txt_expiracion_mes.getText().toString();
                     final Membership membership = memberships[spinner.getSelectedItemPosition() - 1];
+                    Card card;
 
-                    Card card  = new Card(titularName, cardNumber, cvc, vto_month, vto_year);
-                    Token token = new Token(activity);
+                    try{
+                        card  = new Card(titularName, cardNumber, cvc, vto_month, vto_year);
 
-                    token.onCreateTokenListener(new Token.CreateToken() {
-                        @Override
-                        public void onCreateTokenReady(JSONObject data) {
-                            try{
-                                if (!data.getString(OBJECT_RESULT_NAME_CONEKTA).trim().equalsIgnoreCase(ERROR_RESULT_NAME_CONEKTA)){
-                                    InerciaApiClient.getInstance(getContext()).createPayment(data.getString(ID_RESULT_NAME_CONEKTA), Integer.toString(user.getId()), membership.getId() , inerciaApiCreatePaymentListener, loadingViewManager);
-                                } else {
-                                    GeneralDialogFragment.getInstance(data.getString(MESSAGE_TO_PURCHASER),"Aceptar",null)
-                                            .show(getActivity().getSupportFragmentManager(),null);
+                        Token token = new Token(activity);
+
+                        token.onCreateTokenListener(new Token.CreateToken() {
+                            @Override
+                            public void onCreateTokenReady(JSONObject data) {
+                                try{
+                                    if (!data.getString(OBJECT_RESULT_NAME_CONEKTA).trim().equalsIgnoreCase(ERROR_RESULT_NAME_CONEKTA)){
+                                        InerciaApiClient.getInstance(getContext()).createPayment(data.getString(ID_RESULT_NAME_CONEKTA), Integer.toString(user.getId()), membership.getId() , inerciaApiCreatePaymentListener, loadingViewManager);
+                                    } else {
+                                        ConektaErrorObject[] conektaErrorObject = InerciaApiClient.gson.fromJson(data.getString("details"),ConektaErrorObject[].class);
+
+                                        GeneralDialogFragment.getInstance(conektaErrorObject[0].getMessage(),"Aceptar",null)
+                                                .show(getActivity().getSupportFragmentManager(),null);
+                                    }
+                                }catch (Exception e){
+                                    Toast.makeText(activity, "e : " + e.toString(), Toast.LENGTH_SHORT).show();
                                 }
-                            }catch (Exception e){
-                                Toast.makeText(activity, "e : " + e.toString(), Toast.LENGTH_SHORT).show();
                             }
+                        });
+                        token.create(card);
+                    }catch(Exception e){
+                        if(e.getMessage().equalsIgnoreCase(ERROR_EXP_MONTH)){
+                            GeneralDialogFragment.getInstance(ERROR_EXPIRACION_TARJETA,"Aceptar",null)
+                                    .show(getActivity().getSupportFragmentManager(),null);
                         }
-                    });
-                    token.create(card);
+                    }
+
                 }
                 break;
         }

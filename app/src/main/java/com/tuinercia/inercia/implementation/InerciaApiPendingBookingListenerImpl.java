@@ -1,13 +1,17 @@
 package com.tuinercia.inercia.implementation;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.DTO.ReservationTrue;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.CheckInAdapter;
@@ -53,6 +57,7 @@ public class InerciaApiPendingBookingListenerImpl implements InerciaApiPendingBo
                 mHolder.hora = (TextView) v.findViewById(R.id.text_hora);
                 mHolder.estudio = (TextView) v.findViewById(R.id.text_estudio);
                 mHolder.entrador = (TextView) v.findViewById(R.id.text_entrenador);
+//                mHolder.mis_clases_orientame = (ImageView) v.findViewById(R.id.mis_clases_orientame);
             }
 
             @Override
@@ -122,4 +127,13 @@ public class InerciaApiPendingBookingListenerImpl implements InerciaApiPendingBo
         dialog.setCancelable(false);
         dialog.show(agendaActualFragment.getFragmentManager(),null);
     }
+
+    /*private void orientameButtonAction(Parlor parlor){
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + parlor.getCoord_x() + "," + parlor.getCoord_y());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(agendaActualFragment.getContext().getPackageManager()) != null){
+            agendaActualFragment.getContext().startActivity(mapIntent);
+        }
+    }*/
 }

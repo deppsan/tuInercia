@@ -4,13 +4,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>-->
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/inercia_launcher_foreground"
+        android:icon="@mipmap/inercia_launcher_foreground_4"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/inercia_launcher_foreground_round"
+        android:roundIcon="@mipmap/inercia_launcher_foreground_4_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity android:name=".activities.Presentacion">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +25,8 @@
                 <category android:name="android.intent.category.ALTERNATIVE" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginMain">
+        <activity android:name=".activities.LoginMain"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.ALTERNATIVE" />
@@ -35,9 +38,21 @@
                 <category android:name="android.intent.category.ALTERNATIVE" />
             </intent-filter>
         </activity>
+
+        <service android:name=".utils.MyFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/inercia_launcher_foreground_round"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4181362149dc7f8dbf2123636ed334e720b12c37" />
     </application>
 
 </manifest>

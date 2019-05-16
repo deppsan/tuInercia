@@ -75,12 +75,23 @@
                     android:gravity="top"
                     android:listSelector="@drawable/dias_selector"
                     android:choiceMode="singleChoice"/>
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/ActivityStudioContent"
-                    android:text="@string/label_agenda_clase"
-                    android:id="@+id/label_estudio_agenda_tu_clase"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/ActivityStudioContent"
+                        android:text="@string/label_agenda_clase"
+                        android:id="@+id/label_estudio_agenda_tu_clase"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/ActivityStudioContent"
+                        android:text=""
+                        android:id="@+id/label_estudio_agenda_fecha"/>
+                </LinearLayout>
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

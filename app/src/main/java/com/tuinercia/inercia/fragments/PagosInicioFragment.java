@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
@@ -72,6 +73,10 @@ public class PagosInicioFragment extends Fragment implements View.OnClickListene
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
         btn_mejorar_plan.setOnClickListener(this);
         btn_cerrar_sesion.setOnClickListener(this);
+
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

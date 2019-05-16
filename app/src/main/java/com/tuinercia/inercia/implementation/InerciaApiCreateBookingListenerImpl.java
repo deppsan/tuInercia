@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.activities.EstudioAgenda;
+import com.tuinercia.inercia.fragments.dialogs.AvisoFaltaDeCuentaPro;
 import com.tuinercia.inercia.fragments.dialogs.ErrorServerDialog;
 import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.interfaces.InerciaApiCreateBookingListener;
@@ -31,9 +32,18 @@ public class InerciaApiCreateBookingListenerImpl implements InerciaApiCreateBook
     }
 
     @Override
-    public void onCreateBookingError(String errorMessage) {
-        GeneralDialogFragment.getInstance(errorMessage,"Aceptar",null)
-                .show(estudioAgenda.getSupportFragmentManager(),null);
+    public void onCreateBookingError(String errorMessage, String errorType) {
+
+        switch (errorType){
+            case "1":
+                AvisoFaltaDeCuentaPro dialog = new AvisoFaltaDeCuentaPro();
+                dialog.show(estudioAgenda.getSupportFragmentManager(),AvisoFaltaDeCuentaPro.FRAGMENT_TAG);
+                break;
+            default:
+                GeneralDialogFragment.getInstance(errorMessage,"Aceptar",null)
+                        .show(estudioAgenda.getSupportFragmentManager(),null);
+                break;
+        }
     }
 
     @Override

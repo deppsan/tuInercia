@@ -23,12 +23,12 @@ import com.tuinercia.inercia.interfaces.InerciaApiCreateUserListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetBookingHistoryListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetCurrentMembershipListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetDiciplinasListener;
-import com.tuinercia.inercia.interfaces.InerciaApiGetDisciplinesByIdListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetParlorsListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetPlanesInerciaListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetScheduleByParlorListener;
 import com.tuinercia.inercia.interfaces.InerciaApiGetZonesListener;
 import com.tuinercia.inercia.interfaces.InerciaApiPendingBookingListener;
+import com.tuinercia.inercia.interfaces.InerciaApiRegistroTokenFirebaseListener;
 import com.tuinercia.inercia.interfaces.InerciaApiValidarUsuario;
 import com.tuinercia.inercia.interfaces.LoadingViewManager;
 import com.tuinercia.inercia.network.conection.conexionHTTP;
@@ -37,7 +37,6 @@ import com.tuinercia.inercia.utils.UtilsSharedPreference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -238,6 +237,7 @@ public class InerciaApiClient {
         params.put(SEX_HEAD_PARAM, sex);
         params.put(BIRTHDAY_HEAD_PARAM, birthday);
         params.put(TERMINOS_DE_SERVICIO, Boolean.toString(terms));
+        params.put(CREATED_FROM_PARAM,"AND");
         
         new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + CREATE_USER_URL, params,
             new conexionHTTP.VolleyCallback() {
@@ -277,11 +277,11 @@ public class InerciaApiClient {
                             if (response.getBoolean(VALIDATION_RESULT_NAME)){
                                 listener.onCreateBookingSuccess(response.getString(RESPONSE_RESULT_NAME),response.getInt(RESERVATION_ID_RESULT_NAME));
                             }else{
-                                listener.onCreateBookingError(response.getString(ERROR_MESSAGE_NAME));
+                                listener.onCreateBookingError(response.getString(ERROR_MESSAGE_NAME), response.getString(ERROR_TYPE));
                             }
                         }catch (JSONException e){
                             e.printStackTrace();
-                            listener.onCreateBookingError(e.getMessage());
+                            listener.onCreateBookingError(e.getMessage(),"0");
                         }
                     }
                     @Override
@@ -530,9 +530,61 @@ public class InerciaApiClient {
                 },loadingViewManager);
     }
 
+    public void PruebaTSYS(){
+        HashMap<String,String> params = new HashMap<>();
 
+        new conexionHTTP().getInstance().postJsonResponse(mContext, "https://www.tsm-validacion.com.mx/WSIAM/restful/security/tokenRequest" , params,
+                new conexionHTTP.VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try{
+                            if (response.getBoolean(VALIDATION_RESULT_NAME)){
+                                Log.d("RESPOSNE",response.toString());
+                            }else{
+                                Log.d("RESPOSNE",response.toString());
+                            }
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                            Log.d("RESPOSNE",response.toString());
+                        }
+                    }
+                    @Override
+                    public void onError(int statusCode) {
 
-    private static final String BASE_URL = "https://inercia-stg.herokuapp.com/inercia_apis/";
+                        Log.d("RESPOSNE",Integer.toString(statusCode));
+                    }
+                });
+    }
+
+    public void registroTokenFirebase(int userID, String token, final InerciaApiRegistroTokenFirebaseListener listener){
+        HashMap<String,String> params = new HashMap<>();
+        params.put(TOKEN_FIREBASE_PARAM,token);
+        params.put(USER_ID_HEAD_PARAM, Integer.toString(userID));
+
+        new conexionHTTP().getInstance().postJsonResponse(mContext, BASE_URL + SAVE_USER_AND_FIREBASE_TOKEN, params,
+                new conexionHTTP.VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try{
+                            if (response.getBoolean(VALIDATION_RESULT_NAME)){
+
+                            }else{
+                                listener.onRegistroError(response.getString(ERROR_MESSAGE_NAME));
+                            }
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                            listener.onRegistroError(e.getMessage());
+                        }
+                    }
+                    @Override
+                    public void onError(int statusCode) {
+                        listener.onErrorServer(statusCode);
+                    }
+                });
+    }
+
+//    private static final String BASE_URL = "https://inercia-stg.herokuapp.com/inercia_apis/";   //STG
+    private static final String BASE_URL = "https://www.tuinercia.com/inercia_apis/";   //PROD
     private static final GsonBuilder builder = new GsonBuilder();
     public static final Gson gson = builder.create();
 
@@ -544,12 +596,14 @@ public class InerciaApiClient {
     private static final String BIRTHDAY_HEAD_PARAM = "birthdate";
     private static final String ID_HEAD_PARAM = "id";
     private static final String USER_ID_HEAD_PARAM = "user_id";
+    private static final String TOKEN_FIREBASE_PARAM = "token";
     private static final String SCHEDULE_ID_HEAD_PARAM = "schedule_id";
     private static final String RESERVATION_ID_HEAD_PARAM = "reservation_id";
     private static final String PARLOR_ID_HEAD_PARAM = "parlor";
     private static final String TERMINOS_DE_SERVICIO = "terms_of_service";
     private static final String TOKEN_CARD_HEAD_PARAM = "card_tkn";
     private static final String PLAN_ID_HEAD_PARAM = "plan_id";
+    private static final String CREATED_FROM_PARAM = "created_from";
 
     private static final String DICIPLINES_URL = "req_disciplines/";
     private static final String VALIDATE_USER_URL = "validate_user/";
@@ -566,6 +620,8 @@ public class InerciaApiClient {
     private static final String CURRENT_MEMBERSHIP_URL = "req_current_membership";
     private static final String MEMBERSHIP_LIST_URL = "req_memberships_list";
     private static final String CREATE_PAYMENT_URL = "create_payment";
+    private static final String SAVE_USER_AND_FIREBASE_TOKEN = "registro_token_firebase";
+
 
 
     private static final String DISCIPLINES_RESULT_NAME = "disciplines" ;
@@ -588,6 +644,7 @@ public class InerciaApiClient {
     private static final String PROGRESS_RESULT_NAME = "progress";
     private static final String MEMBERSHIP_RESULT_NAME = "memberships";
     private static final String SHOW_PROGRESS_RESULT_NAME = "show_progress";
+    private static final String ERROR_TYPE = "error_type";
 
 }
 

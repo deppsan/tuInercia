@@ -16,4 +16,5 @@
 
     <!--Dimensiones de Botones-->
     <dimen name="button_height">35dp</dimen>
+    <dimen name="btn_agendar">13dp</dimen>
 </resources>

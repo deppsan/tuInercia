@@ -43,7 +43,7 @@
                 android:text="Fecha de Cumpleaños: "
                 android:textColor="@color/WHITE"
                 android:gravity="center_vertical"/>
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -61,7 +61,67 @@
                     android:textColorHint="@color/GRAY"
                     android:backgroundTint="@color/WHITE"
                     android:focusable="false"/>
-            </LinearLayout>
+            </LinearLayout>-->
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:weightSum="6">
+            <EditText
+                android:id="@+id/txt_day_birth"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:inputType="number"
+                android:maxLength="2"
+                android:hint="DD"
+                android:maxLines="1"
+                android:textColor="@color/WHITE"
+                android:textColorHint="@color/GRAY"
+                android:backgroundTint="@color/WHITE"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="/"
+                android:textColor="@color/WHITE"
+                android:gravity="center_vertical"/>
+            <EditText
+                android:id="@+id/txt_month_birth"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:inputType="number"
+                android:maxLength="2"
+                android:hint="MM"
+                android:maxLines="1"
+                android:textColor="@color/WHITE"
+                android:textColorHint="@color/GRAY"
+                android:backgroundTint="@color/WHITE"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="/"
+                android:textColor="@color/WHITE"
+                android:gravity="center_vertical"/>
+            <EditText
+                android:id="@+id/txt_year_birth"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:inputType="number"
+                android:maxLength="4"
+                android:hint="YYYY"
+                android:maxLines="1"
+                android:textColor="@color/WHITE"
+                android:textColorHint="@color/GRAY"
+                android:backgroundTint="@color/WHITE"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

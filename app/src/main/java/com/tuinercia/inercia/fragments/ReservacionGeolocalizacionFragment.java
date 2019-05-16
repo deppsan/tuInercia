@@ -28,13 +28,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -43,6 +46,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.OkHttpDownloader;
@@ -51,6 +55,7 @@ import com.tuinercia.inercia.DTO.Disciplines;
 import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.DTO.Zone;
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.implementation.ChangeTitleImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetParlorsListenerImpl;
 import com.tuinercia.inercia.implementation.InerciaApiGetZonesListenerImpl;
@@ -82,8 +87,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
     public static ArrayList<Parlor> res_parlors;
     boolean permisosNoOtorgados = false;
-    int currentSpinnerOption = 0;
     int permissionCheck;
+    int currentSpinnerOption = 0;
+    boolean firstEntry = true;
     Disciplines disciplineSelected;
     ReservacionGeolocalizacionListener listener;
 
@@ -97,6 +103,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     InerciaApiGetParlorsListenerImpl inerciaApiGetParlorsListener;
     InerciaApiGetZonesListenerImpl inerciaApiGetZonesListener;
 
+    LocationManager locationManager;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_agendar_geolocalizacion, container, false);
@@ -128,7 +135,11 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
         mMap.getMapAsync(this);
         image_button_my_location.setOnClickListener(this);
-        image_button_my_location.setVisibility(View.INVISIBLE);
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            image_button_my_location.setVisibility(View.VISIBLE);
+        }
+
         spn_Zonas.setOnItemSelectedListener(this);
 
         inerciaApiGetParlorsListener = new InerciaApiGetParlorsListenerImpl(this);
@@ -136,6 +147,12 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
 
         InerciaApiClient.getInstance(getActivity().getBaseContext()).getAllZones(inerciaApiGetZonesListener);
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
+
+        Toast.makeText(mContext, mContext.getString(R.string.toast_geoocalizacion), Toast.LENGTH_LONG).show();
+
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }
@@ -145,7 +162,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         public void onLocationResult(LocationResult locationResult) {
             for (Location location : locationResult.getLocations()){
                 mLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng,15.0f));
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng,12.0f));
             }
         }
     };
@@ -178,14 +195,18 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         CameraPosition cameraPosition;
 
-        Zone zone = (Zone) spn_Zonas.getSelectedItem();
+        if(!firstEntry){
+            Zone zone = (Zone) spn_Zonas.getSelectedItem();
 
-        cameraPosition = new CameraPosition.Builder()
-                            .target(new LatLng(Double.parseDouble(zone.getLat()),Double.parseDouble(zone.getLng())))
-                            .zoom(15.0f)
-                            .build();
-        gMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        currentSpinnerOption = position;
+            cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(Double.parseDouble(zone.getLat()),Double.parseDouble(zone.getLng())))
+                    .zoom(13.0f)
+                    .build();
+            gMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            currentSpinnerOption = position;
+        }else{
+            firstEntry = false;
+        }
     }
 
     @Override
@@ -204,10 +225,15 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
                     if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)){
                         if (grantResult == PackageManager.PERMISSION_GRANTED){
                             try {
-                                if (mGoogleApiClient != null){
+                                if (mGoogleApiClient == null){
                                     buildGoogleApiClient();
                                 }
                                 gMap.setMyLocationEnabled(true);
+                                gMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+                                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                                    image_button_my_location.setVisibility(View.VISIBLE);
+                                }
                             } catch (SecurityException e) {
                                 e.printStackTrace();
                             }
@@ -228,6 +254,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         gMap = googleMap;
 
         InerciaApiClient.getInstance(mContext).getParlorsByDicipline(disciplineSelected.getName(),inerciaApiGetParlorsListener);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.6673117,-100.3473442),13.0f));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -235,7 +262,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
                 try {
                     gMap.setMyLocationEnabled(true);
                     gMap.getUiSettings().setMyLocationButtonEnabled(false);
-                    image_button_my_location.setVisibility(View.VISIBLE);
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        image_button_my_location.setVisibility(View.VISIBLE);
+                    }
 
                 } catch (SecurityException e) {
                     e.printStackTrace();
@@ -248,8 +277,9 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             try{
                 gMap.setMyLocationEnabled(true);
                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
-                image_button_my_location.setVisibility(View.VISIBLE);
-
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    image_button_my_location.setVisibility(View.VISIBLE);
+                }
             }catch (SecurityException e){
                 e.printStackTrace();
             }
@@ -298,7 +328,7 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng latLng = marker.getPosition();
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude + .003, latLng.longitude),15.0f));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude + .003, latLng.longitude),12.0f));
         marker.showInfoWindow();
         return true;
     }
@@ -308,25 +338,31 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
         switch (v.getId()){
             case R.id.image_button_my_location:
                 if (mLatLng != null){
-                    LocationManager locationManager =
-                            (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
                     Criteria criteria = new Criteria();
-                    String provider = locationManager.getBestProvider(criteria, false);
-                    Location location;
-                    try{
-                        location = locationManager.getLastKnownLocation(provider);
-                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new
-                                LatLng(location.getLatitude(),
-                                location.getLongitude()), 15.0f));
-                    }catch (SecurityException e){
-                        e.printStackTrace();
+
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                        String provider = locationManager.getBestProvider(criteria, false);
+                        Location location;
+
+                        try{
+                            location = locationManager.getLastKnownLocation(provider);
+                            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new
+                                    LatLng(location.getLatitude(),
+                                    location.getLongitude()), 15.0f));
+                        }catch (SecurityException e){
+                            e.printStackTrace();
+
+                        }
+                    }else{
+                        GeneralDialogFragment.getInstance("Debes tener el servicio de GPS activado para usar esta opción. Favor de activarlo en configuraciones de tu celular.", getResources().getString(R.string.btn_login_check),null)
+                        .show(this.getFragmentManager(),null);
                     }
 
                 }else if (permisosNoOtorgados){
                     Toast.makeText(getContext(), "No has otorgado permisos de localización, favor de revisar en administrador de Aplicaciones de tu Célular.", Toast.LENGTH_LONG).show();
                     spn_Zonas.setSelection(currentSpinnerOption);
                 }
-                break;
+                return;
         }
     }
 
@@ -398,10 +434,12 @@ public class ReservacionGeolocalizacionFragment extends Fragment implements View
             }
 
             if (no_first_time){
-                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio);
+//                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio);
+                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerInside().into(img_info_studio);
             }else{
                 marker.setTag(true);
-                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio, new InfoWindowRefreser(marker));
+//                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerCrop().into(img_info_studio, new InfoWindowRefreser(marker));
+                mPicasso.load(p.getPic1_url()).resize(250,((mHeight/3))-(actionBarHeight/3)).centerInside().into(img_info_studio, new InfoWindowRefreser(marker));
             }
 
             button_ver_clase_info.setTypeface(TypeFaceCustom.getInstance(mContext).UBUNTU_TYPE_FACE);

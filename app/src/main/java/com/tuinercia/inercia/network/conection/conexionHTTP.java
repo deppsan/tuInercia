@@ -84,7 +84,15 @@ public class conexionHTTP{
                     callback.onError(500);
                 }
             }
-        });
+        })/*{
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap headers = new HashMap();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "APPLICATION@WSIAM:password");
+                return headers;
+            }
+        }*/;
         jsonObjectRequest.setRetryPolicy( new DefaultRetryPolicy(0,-1,0));
         queue.add(jsonObjectRequest);
     }

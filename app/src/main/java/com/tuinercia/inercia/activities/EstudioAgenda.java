@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
 import com.tuinercia.inercia.DTO.Parlor;
 import com.tuinercia.inercia.DTO.Reservation;
@@ -27,6 +28,7 @@ import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.EstudioSeleccionSemanaAdapter;
 import com.tuinercia.inercia.adapter.HorariosRecycleAdapter;
 import com.tuinercia.inercia.adapter.ReservationRecycleAdapter;
+import com.tuinercia.inercia.fragments.dialogs.AvisoFaltaDeCuentaPro;
 import com.tuinercia.inercia.fragments.dialogs.ConfirmarCancelarReservacionDialog;
 import com.tuinercia.inercia.fragments.dialogs.ConfirmarReservarScheduleDialog;
 import com.tuinercia.inercia.implementation.DialgoFragmentCancelFromAgendaListenerImpl;
@@ -42,9 +44,13 @@ import com.tuinercia.inercia.network.InerciaApiClient;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 import com.tuinercia.inercia.utils.UtilsSharedPreference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.tuinercia.inercia.activities.MainPage.INTENT_EXTRA_HEADER_DISCIPLINE;
 
@@ -54,11 +60,13 @@ import static com.tuinercia.inercia.activities.MainPage.INTENT_EXTRA_HEADER_DISC
 
 public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnItemClickListener
                                                     , ConfirmarReservarScheduleDialog.ConfirmarReservarScheduleDialogListener
+                                                    , AvisoFaltaDeCuentaPro.AvisoFaltaDeCuentaProListener
                                                     , View.OnClickListener{
 
     GridView grd_dias_semana;
     RecyclerView rcv_horarios, rcv_reservaciones;
     TextView text_estudios_description
+            ,label_estudio_agenda_fecha
             , label_estudio_description
             , label_estudio_agenda_tu_clase
             , label_estudio_direccion
@@ -107,6 +115,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         grd_dias_semana             = (GridView) findViewById(R.id.grid_dias_semana);
         text_estudios_description   = (TextView) findViewById(R.id.text_estudio_description);
         label_estudio_description   = (TextView) findViewById(R.id.lebel_estudio_description);
+        label_estudio_agenda_fecha = (TextView) findViewById(R.id.label_estudio_agenda_fecha);
         label_estudio_agenda_tu_clase = (TextView) findViewById(R.id.label_estudio_agenda_tu_clase);
         label_estudio_direccion       = (TextView) findViewById(R.id.label_estudio_direccion);
         button_estudio_orientame      = (Button) findViewById(R.id.button_estudio_orientame);
@@ -119,6 +128,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         label_estudio_agenda_tu_clase.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
         label_estudio_direccion.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
         button_estudio_orientame.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
+        label_estudio_agenda_fecha.setTypeface(TypeFaceCustom.getInstance(this).UBUNTU_TYPE_FACE);
 
         text_estudios_description.setText(parlor.getDescription());
         text_estudios_direccion.setText(parlor.getAddress());
@@ -151,7 +161,7 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         rcv_reservaciones.setItemAnimator(new DefaultItemAnimator());
         rcv_reservaciones.setAdapter(reservacionAdapter);
 
-
+        getDayofTheWeek(null);
 
         grd_dias_semana.setAdapter(adapter);
         grd_dias_semana.setOnItemClickListener(this);
@@ -163,17 +173,27 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         loadingViewManager = new LoadingViewManagerImpl(view);
         button_estudio_orientame.setOnClickListener(this);
 
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setCurrentScreen(this, "EstudioAgenda", null);
+
 
         InerciaApiClient.getInstance(this).getScheduleByParlor(Integer.parseInt(discipline), parlor.getId(), user.getId(),inerciaApiGetScheduleByParlorListener, loadingViewManager);
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(schedules.size() > 0){
-            this.chargeScheduleList(schedules.get(position));
+        if (schedules != null){
+            if(schedules.size() > 0){
+                this.chargeScheduleList(schedules.get(position));
+            }
         }
-        if (reservaciones_array.size() > 0){
-            this.chargeReservationList(reservaciones_array.get(position));
+
+        if (reservaciones_array != null){
+            if (reservaciones_array.size() > 0){
+                this.chargeReservationList(reservaciones_array.get(position));
+            }
         }
+
+        getDayofTheWeek(String.valueOf(position));
     }
     @Override
     protected void onResume() {
@@ -186,6 +206,10 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     }
     @Override
     public void onAceptarConfirmacion(int idSchedule) {
+        InerciaApiClient.getInstance(this).createBooking(Integer.toString(UtilsSharedPreference.getInstance(this).getUser().getId()),Integer.toString(idSchedule),inerciaApiCreateBookingListener, loadingViewManager);
+    }
+
+    public void realizarReservacion(int idSchedule){
         InerciaApiClient.getInstance(this).createBooking(Integer.toString(UtilsSharedPreference.getInstance(this).getUser().getId()),Integer.toString(idSchedule),inerciaApiCreateBookingListener, loadingViewManager);
     }
 
@@ -250,6 +274,25 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
         }
         return arr_day;
     }
+
+    public void getDayofTheWeek(@Nullable String increment){
+        Calendar c = Calendar.getInstance();
+
+        if(!(increment == null)) {
+            c.add(Calendar.DAY_OF_MONTH, Integer.parseInt(increment));
+        }
+        label_estudio_agenda_fecha.setText(formatTextTime(c));
+    }
+    private String formatTextTime(Calendar c){
+
+        Locale loc = new Locale("es","MX");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", loc);
+
+        formatter = new SimpleDateFormat("E d MMM",loc);
+        return formatter.format(c.getTime()).toUpperCase();
+    }
+
+
     public List<Schedule> getHorarios() {
         return horarios;
     }
@@ -282,4 +325,17 @@ public class EstudioAgenda extends AppCompatActivity implements AdapterView.OnIt
     public LoadingViewManager getLoadingViewManager(){
         return loadingViewManager;
     }
+
+    public void GoToMiCuenta(){
+        Intent i = new Intent(this,MainPage.class);
+        i.putExtra(MainPage.INTENT_EXTRA_HEADER_GO_TO_MI_CUENTA, true);
+        startActivity(i);
+    }
+
+    @Override
+    public void onpushGoProButton() {
+        GoToMiCuenta();
+    }
+
+
 }

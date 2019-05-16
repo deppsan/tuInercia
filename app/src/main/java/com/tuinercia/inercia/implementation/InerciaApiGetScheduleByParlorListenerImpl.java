@@ -31,6 +31,12 @@ public class InerciaApiGetScheduleByParlorListenerImpl implements InerciaApiGetS
 
     @Override
     public void onGetScheduleByParlor(ArrayList<Schedule[]> schedules, ArrayList<Reservation[]> reservations) {
+
+        for (Schedule[] arr_s : schedules){
+            for(Schedule s : arr_s){
+                s.setSelected(false);
+            }
+        }
         estudioAgenda.setSchedules(schedules);
         if(schedules.size() > 0){
             estudioAgenda.chargeScheduleList(schedules.get(0));

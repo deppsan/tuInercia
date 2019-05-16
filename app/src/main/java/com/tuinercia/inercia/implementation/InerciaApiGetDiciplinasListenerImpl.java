@@ -36,6 +36,18 @@ public class InerciaApiGetDiciplinasListenerImpl implements InerciaApiGetDicipli
         for (Disciplines d : disciplines){
             data.add(d);
         }
+
+        if(disciplines.length % 2 != 0){
+            Disciplines phantom_discipline = new Disciplines();
+            phantom_discipline.setId("0");
+            phantom_discipline.setName("");
+            phantom_discipline.setPic_file_name("");
+
+            data.add(phantom_discipline);
+        }
+
+
+
         reservacionClasesFragment.grid_clases.setAdapter(new ReservacionClasesAdapter(R.layout.object_grid_reservacion_clases,data,reservacionClasesFragment.getContext()) {
             @Override
             public void onEntradaSet(View v, ReservacionClasesAdapter.ViewHolder mHolder) {
@@ -47,11 +59,15 @@ public class InerciaApiGetDiciplinasListenerImpl implements InerciaApiGetDicipli
             public void onEntrada(Object clases, ReservacionClasesAdapter.ViewHolder mHolder, int position) {
                 Disciplines discipline = (Disciplines) clases;
                 mHolder.nombreClase.setText(discipline.getName());
-                Picasso.with(reservacionClasesFragment.getContext())
-                        .load("http:" + discipline.getPic_file_name())
-                        .placeholder(R.drawable.exercise)
-                        .resize(80,80)
-                        .into(mHolder.imagenClase);
+                if (Integer.parseInt(discipline.getId()) != 0) {
+                    Picasso.with(reservacionClasesFragment.getContext())
+                            .load("http:" + discipline.getPic_file_name())
+                            .placeholder(R.drawable.exercise)
+                            .resize(80,80)
+                            .into(mHolder.imagenClase);
+                }else{
+                    mHolder.imagenClase.setImageDrawable(null);
+                }
             }
         });
     }

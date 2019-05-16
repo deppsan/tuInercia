@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public abstract class CheckInAdapter extends BaseAdapter {
     public abstract void onEntrada(Object objects, HolderView mHolder, int position);
 
     public class HolderView{
+        public ImageView mis_clases_orientame;
         public TextView fecha,hora,estudio,clase,entrador;
         public boolean isSelected;
         public Button button;

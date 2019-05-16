@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.fragments.dialogs.GeneralDialogFragment;
 import com.tuinercia.inercia.implementation.InerciaApiCreateUserListenerImpl;
@@ -40,10 +42,10 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
     public static final String EMAIL_FRAGMENT_PARAM  = "email";
     public static final String PASSWORD_FRAGMENT_PARAM  = "password";
     final static String EMPTY_STRING = "";
-    final static String URL_TERMINOS_CONDICIONES = "https://inercia-stg.herokuapp.com/terminos_miembros";
+    final static String URL_TERMINOS_CONDICIONES = "https://inercia.herokuapp.com/terminos_miembros";
 
 
-    EditText textview_nombre, txt_year_birth;
+    EditText textview_nombre, txt_year_birth, txt_day_birth, txt_month_birth;
     Switch swt_terminos_condiciones;
     TextView text_terminos_condiciones;
     Button button_crear;
@@ -59,7 +61,7 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
 
     private static CrearCuentaWizard2Fragment instance;
     Calendar calendar;
-    DatePickerDialog.OnDateSetListener date;
+//    DatePickerDialog.OnDateSetListener date;
 
     @Nullable
     @Override
@@ -70,6 +72,8 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
         view = v.findViewById(R.id.loading_view);
         textview_nombre = (EditText) v.findViewById(R.id.textview_nombre);
         txt_year_birth  = (EditText) v.findViewById(R.id.txt_year_birth);
+        txt_day_birth = (EditText) v.findViewById(R.id.txt_day_birth);
+        txt_month_birth = (EditText) v.findViewById(R.id.txt_month_birth);
         swt_terminos_condiciones = (Switch) v.findViewById(R.id.swt_terminos_condiciones);
         text_terminos_condiciones = (TextView) v.findViewById(R.id.text_terminos_condiciones);
         button_crear = (Button) v.findViewById(R.id.button_crear);
@@ -77,7 +81,7 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
 
         password = getArguments().getString(PASSWORD_FRAGMENT_PARAM);
         email = getArguments().getString(EMAIL_FRAGMENT_PARAM);
-        txt_year_birth.setKeyListener(null);
+//        txt_year_birth.setKeyListener(null);
 
         inerciaApiCreateUser = new InerciaApiCreateUserListenerImpl(this);
         loadingViewManager = new LoadingViewManagerImpl(view);
@@ -86,9 +90,9 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
         text_terminos_condiciones.setOnClickListener(this);
         button_crear.setOnClickListener(this);
         swt_terminos_condiciones.setOnCheckedChangeListener(this);
-        txt_year_birth.setOnClickListener(this);
+//        txt_year_birth.setOnClickListener(this);
 
-        date = new DatePickerDialog.OnDateSetListener() {
+        /*date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                 calendar.set(Calendar.YEAR, i);
@@ -98,16 +102,21 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
             }
         };
 
+
+*/
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
+
         return v;
     }
 
-    private void updateLabel() {
+    /*private void updateLabel() {
         String myFormat = "yyyy/MM/dd"; //In which you need put here
 
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         txt_year_birth.setText(sdf.format(calendar.getTime()));
-    }
+    }*/
 
     public static CrearCuentaWizard2Fragment getInstance(){
         if (instance == null){
@@ -119,12 +128,13 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.txt_year_birth:
+            /*case R.id.txt_year_birth:
                 new DatePickerDialog(getContext(), AlertDialog.THEME_HOLO_LIGHT, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
+                break;*/
             case R.id.text_terminos_condiciones:
                 Dialog dialog = new Dialog(getActivity());
 
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.custom_dialog_terminos_condicones);
                 WebView wb = (WebView) dialog.findViewById(R.id.webview);
                 wb.getSettings().setJavaScriptEnabled(true);
@@ -137,14 +147,17 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
                 break;
             case R.id.button_crear:
 
-                String name, birthday, sex, year;
+                String name, birthday, sex, year, day, month;
                 int optSex = rdo_sex.getCheckedRadioButtonId();
 
                 name = textview_nombre.getText().toString();
                 year = txt_year_birth.getText().toString();
+                day = txt_day_birth.getText().toString();
+                month = txt_month_birth.getText().toString();
 
-                if (validateForm(name,year)){
-                    birthday = txt_year_birth.getText().toString();
+                if (validateForm(name,year,day,month)){
+//                    birthday = txt_year_birth.getText().toString();
+                    birthday = year + "-" + month + "-" + day;
 
                     if (optSex == 1){
                         sex = "F";
@@ -158,7 +171,7 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
         }
     }
 
-    private boolean validateForm(String name, String year){
+    private boolean validateForm(String name, String year, String day, String month){
         boolean validation = true;
 
         if ( name.trim().equalsIgnoreCase(EMPTY_STRING)){
@@ -167,6 +180,16 @@ public class CrearCuentaWizard2Fragment extends Fragment implements View.OnClick
         }
 
         if ( year.trim().equalsIgnoreCase(EMPTY_STRING)){
+            validation = false;
+            txt_year_birth.setError(getActivity().getString(R.string.label_campo_obligatorio));
+        }
+
+        if ( day.trim().equalsIgnoreCase(EMPTY_STRING)){
+            validation = false;
+            txt_year_birth.setError(getActivity().getString(R.string.label_campo_obligatorio));
+        }
+
+        if ( month.trim().equalsIgnoreCase(EMPTY_STRING)){
             validation = false;
             txt_year_birth.setError(getActivity().getString(R.string.label_campo_obligatorio));
         }

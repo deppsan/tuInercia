@@ -18,17 +18,21 @@ public class Reservation {
     String date;
     @SerializedName("time")
     String time;
+
+    @SerializedName("name")
+    String name;
     @SerializedName("no_cancel")
     boolean no_cancel;
 
 
-    public Reservation(int id, int reservation_id, String clase, String date, String time, boolean no_cancel) {
+    public Reservation(int id, int reservation_id, String clase, String date, String time, boolean no_cancel, String name) {
         this.id = id;
         this.reservation_id = reservation_id;
         this.clase = clase;
         this.date = date;
         this.time = time;
         this.no_cancel = no_cancel;
+        this.name = name;
     }
 
     public boolean isNo_cancel() {
@@ -77,5 +81,13 @@ public class Reservation {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 
 import com.tuinercia.inercia.R;
 
@@ -19,7 +21,7 @@ public class ConfirmarReservarScheduleDialog extends DialogFragment {
 
     ConfirmarReservarScheduleDialogListener listener;
 
-    @NonNull
+   /* @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -41,6 +43,22 @@ public class ConfirmarReservarScheduleDialog extends DialogFragment {
                 .setMessage(R.string.dialog_message_confirmar_reservacion);
 
         return builder.create();
+    }*/
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final int id = getArguments().getInt(SCHEDULE_ARGS);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setView(R.layout.custom_dialog_caducidad_exp);
+        }else{
+            View view = getActivity().getLayoutInflater().inflate(R.layout.custom_dialog_caducidad_exp,null);
+            builder.setView(view);
+        }
+
+        return builder.show();
     }
 
     public static ConfirmarReservarScheduleDialog newInstance(int idSchedule){

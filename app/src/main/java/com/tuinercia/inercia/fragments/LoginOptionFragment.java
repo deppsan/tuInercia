@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
@@ -45,6 +46,9 @@ public class LoginOptionFragment extends Fragment implements View.OnClickListene
 
         btn_sign_up.setOnClickListener(this);
         btn_login.setOnClickListener(this);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

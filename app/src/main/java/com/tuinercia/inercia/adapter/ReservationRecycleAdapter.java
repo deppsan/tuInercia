@@ -66,17 +66,17 @@ public class ReservationRecycleAdapter extends RecyclerView.Adapter<ReservationR
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Reservation horario = horarios.get(position);
-        Locale loc = new Locale("es","MX");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", loc);
-        Calendar cal = Calendar.getInstance();
+
+        final String time = horario.getTime();
+
         try {
-            Date date = formatter.parse(horario.getDate());
-            cal.setTime(date);
-        } catch (ParseException e) {
+            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+            final Date dateObj = sdf.parse(time);
+
+            holder.text_horarios.setText(new SimpleDateFormat("K:mm a").format(dateObj) + " - " + horario.getName());
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
-        formatter = new SimpleDateFormat("E d MMMM",loc);
-        holder.text_horarios.setText(formatter.format(cal.getTime()) + " " + horario.getTime());
 
         holder.btn_reservar.setText(R.string.btn_cancelar);
         if (horario.isNo_cancel()){

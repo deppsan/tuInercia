@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.DTO.Disciplines;
 import com.tuinercia.inercia.R;
 import com.tuinercia.inercia.adapter.ReservacionClasesAdapter;
@@ -52,6 +53,10 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
 
         ChangeTitleImpl.getInstance().changeTitleByCurrentFragment(TITLE);
 
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
+
         return v;
 
     }
@@ -60,7 +65,9 @@ public class ReservacionClasesFragment extends Fragment implements AdapterView.O
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ReservacionClasesAdapter adapter  = (ReservacionClasesAdapter) parent.getAdapter();
         Disciplines d = (Disciplines) adapter.getItem(position);
-        listener.onClaseSeleccionada(this.FRAGMENT_TAG,d);
+        if (Integer.parseInt(d.getId()) != 0){
+            listener.onClaseSeleccionada(this.FRAGMENT_TAG,d);
+        }
     }
 
     public interface ReservacionClasesListener{

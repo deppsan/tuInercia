@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+    <TextView
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_title_sos"
+        android:lines="2"
+        android:paddingBottom="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/btn_sos_whatsapp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sos_button_bg"
+            android:drawableLeft="@drawable/sos_whatsapp_icon"
+            android:text="Whatsapp: 81 31 19 34 04"
+            android:textColor="#9b9e96"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/btn_sos_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sos_button_bg"
+            android:drawableLeft="@drawable/sos_messanger_icon"
+            android:text="SMS: 81 31 19 34 04"
+            android:textColor="#FF9B9E96"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/btn_sos_mail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sos_button_bg"
+            android:drawableLeft="@drawable/sos_mail_icon"
+            android:text="e-mail: sos@tuinercia.com"
+            android:textColor="#FF9B9E96"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_margin="5dp">
+        </Button>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+</LinearLayout>

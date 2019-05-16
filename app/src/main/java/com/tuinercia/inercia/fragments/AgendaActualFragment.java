@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tuinercia.inercia.DTO.Reservation;
 import com.tuinercia.inercia.DTO.User;
 import com.tuinercia.inercia.R;
@@ -32,6 +33,8 @@ import java.util.HashMap;
  */
 
 public class AgendaActualFragment extends Fragment {
+
+    public final static String FRAGMENT_TAG = "AgendaActualFragment";
 
     ListView list_agenda;
     Button button_selected;
@@ -66,6 +69,10 @@ public class AgendaActualFragment extends Fragment {
         loadingViewManager = new LoadingViewManagerImpl(view);
 
         InerciaApiClient.getInstance(getActivity()).pendingBookin(Integer.toString(user.getId()), inerciaApiPendingBookingListener, loadingViewManager);
+
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics.setCurrentScreen(getActivity(),FRAGMENT_TAG, null);
 
         return v;
     }

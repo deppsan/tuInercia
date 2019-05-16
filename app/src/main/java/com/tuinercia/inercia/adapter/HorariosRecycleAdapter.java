@@ -1,5 +1,6 @@
 package com.tuinercia.inercia.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.tuinercia.inercia.DTO.Schedule;
 import com.tuinercia.inercia.R;
+import com.tuinercia.inercia.fragments.dialogs.InformacionClasesDialog;
 import com.tuinercia.inercia.interfaces.HorarioRecycleAdapterListener;
 import com.tuinercia.inercia.utils.TypeFaceCustom;
 
@@ -45,8 +47,16 @@ public class HorariosRecycleAdapter extends RecyclerView.Adapter<HorariosRecycle
                     listener.onClickButtonListener(v,getAdapterPosition());
                 }
             });
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClickInformationListener(view,getAdapterPosition());
+                }
+            });
         }
     }
+
 
     public HorariosRecycleAdapter(List<Schedule> horarios, Context mContext, HorarioRecycleAdapterListener listener){
         this.horarios = horarios;
@@ -65,17 +75,23 @@ public class HorariosRecycleAdapter extends RecyclerView.Adapter<HorariosRecycle
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Schedule horario = horarios.get(position);
-        Locale loc = new Locale("es","MX");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", loc);
-        Calendar cal = Calendar.getInstance();
+        final String time = horario.getTime();
+
+        if(horario.isSelected()){
+            holder.btn_reservar.setText("Cancelar");
+        }else{
+            holder.btn_reservar.setText("Agendar");
+        }
+
+
         try {
-            Date date = formatter.parse(horario.getDate());
-            cal.setTime(date);
-        } catch (ParseException e) {
+            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+            final Date dateObj = sdf.parse(time);
+
+            holder.text_horarios.setText(new SimpleDateFormat("K:mm a").format(dateObj) + " - " + horario.getName());
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
-        formatter = new SimpleDateFormat("E d MMMM",loc);
-        holder.text_horarios.setText(formatter.format(cal.getTime()) + " " + horario.getTime());
     }
 
     @Override

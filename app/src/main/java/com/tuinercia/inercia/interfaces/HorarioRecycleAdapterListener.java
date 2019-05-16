@@ -8,4 +8,5 @@ import android.view.View;
 
 public interface HorarioRecycleAdapterListener {
     void onClickButtonListener(View v, int position);
+    void onClickInformationListener(View v, int position);
 }
